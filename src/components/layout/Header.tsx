@@ -1,15 +1,18 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
-import { Search, Menu, X, Globe, User, Plus, LogOut } from 'lucide-react';
+import { Search, Menu, X, Globe, User, Plus, LogOut, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const Header = () => {
   const { t, language, setLanguage } = useLanguage();
+  const { user, signOut, isAdmin } = useAuth();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -99,6 +102,24 @@ export const Header = () => {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
+
+            {isAdmin && (
+              <NavigationMenuItem>
+                <Link to="/admin">
+                  <NavigationMenuLink 
+                    className={cn(
+                      "px-4 py-2 rounded-md transition-colors flex items-center",
+                      isActive('/admin') 
+                        ? "bg-primary/10 text-primary" 
+                        : "hover:bg-primary/5"
+                    )}
+                  >
+                    <Shield className="mr-2 h-4 w-4" />
+                    {t('nav.admin')}
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -151,16 +172,40 @@ export const Header = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem asChild>
-                <Link to="/auth" className="w-full cursor-pointer">
-                  {t('nav.login')}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/auth" className="w-full cursor-pointer">
-                  {t('nav.register')}
-                </Link>
-              </DropdownMenuItem>
+              {user ? (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="w-full cursor-pointer">
+                      {t('nav.profile')}
+                    </Link>
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="w-full cursor-pointer flex items-center">
+                        <Shield className="mr-2 h-4 w-4" />
+                        {t('nav.admin')}
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={signOut} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    {t('nav.logout')}
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link to="/auth" className="w-full cursor-pointer">
+                      {t('nav.login')}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/auth" className="w-full cursor-pointer">
+                      {t('nav.register')}
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -214,21 +259,56 @@ export const Header = () => {
                 >
                   {t('nav.add-bot')}
                 </Link>
+
+                {isAdmin && (
+                  <Link 
+                    to="/admin"
+                    className={cn(
+                      "px-4 py-3 rounded-md transition-colors flex items-center",
+                      isActive('/admin') ? "bg-primary/10 text-primary" : ""
+                    )}
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    {t('nav.admin')}
+                  </Link>
+                )}
+
                 <div className="pt-2 border-t">
-                  <Link 
-                    to="/auth"
-                    className="px-4 py-3 rounded-md transition-colors flex items-center"
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    {t('nav.login')}
-                  </Link>
-                  <Link 
-                    to="/auth"
-                    className="px-4 py-3 rounded-md transition-colors flex items-center"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t('nav.register')}
-                  </Link>
+                  {user ? (
+                    <>
+                      <Link 
+                        to="/profile"
+                        className="px-4 py-3 rounded-md transition-colors flex items-center"
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        {t('nav.profile')}
+                      </Link>
+                      <button 
+                        onClick={signOut}
+                        className="w-full text-left px-4 py-3 rounded-md transition-colors flex items-center"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        {t('nav.logout')}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link 
+                        to="/auth"
+                        className="px-4 py-3 rounded-md transition-colors flex items-center"
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        {t('nav.login')}
+                      </Link>
+                      <Link 
+                        to="/auth"
+                        className="px-4 py-3 rounded-md transition-colors flex items-center"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        {t('nav.register')}
+                      </Link>
+                    </>
+                  )}
                 </div>
               </nav>
             </div>

@@ -14,10 +14,8 @@ import AuthCallback from "./pages/AuthCallback";
 import AddBot from "./pages/AddBot";
 import Bots from "./pages/Bots";
 import NotFound from "./pages/NotFound";
-
-// Import additional pages when created
-// import Register from "./pages/Register";
-// import BotDetail from "./pages/BotDetail";
+import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -37,18 +35,11 @@ const App = () => (
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/add-bot" element={<AddBot />} />
                   <Route path="/bots" element={<Bots />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/admin" element={<Admin />} />
                   {/* Redirects for login and register */}
                   <Route path="/login" element={<Navigate to="/auth" />} />
                   <Route path="/register" element={<Navigate to="/auth" />} />
-                  {/* Add additional routes here */}
-                  {/* <Route path="/bots/:id" element={<BotDetail />} /> */}
-                  {/* <Route path="/admin/*" element={<Admin />} /> */}
-                  {/* <Route path="/profile" element={<Profile />} /> */}
-                  {/* <Route path="/search" element={<Search />} /> */}
-                  {/* <Route path="/privacy" element={<Privacy />} /> */}
-                  {/* <Route path="/terms" element={<Terms />} /> */}
-                  {/* <Route path="/imprint" element={<Imprint />} /> */}
-                  
                   {/* Catch-all route for 404 */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
