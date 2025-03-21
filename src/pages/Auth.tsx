@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -12,7 +11,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { DiscordLogoIcon } from '@radix-ui/react-icons';
+import { Discord } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const loginSchema = z.object({
@@ -38,7 +37,6 @@ const Auth = () => {
   const { signIn, signUp, signInWithDiscord, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
 
-  // Login form
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -47,7 +45,6 @@ const Auth = () => {
     },
   });
 
-  // Register form
   const registerForm = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -145,7 +142,7 @@ const Auth = () => {
 
                 <div className="mt-4">
                   <Button variant="outline" className="w-full" onClick={handleDiscordLogin} disabled={loading}>
-                    <DiscordLogoIcon className="mr-2 h-4 w-4" />
+                    <Discord className="mr-2 h-4 w-4" />
                     Discord
                   </Button>
                 </div>
@@ -229,7 +226,7 @@ const Auth = () => {
 
                 <div className="mt-4">
                   <Button variant="outline" className="w-full" onClick={handleDiscordLogin} disabled={loading}>
-                    <DiscordLogoIcon className="mr-2 h-4 w-4" />
+                    <Discord className="mr-2 h-4 w-4" />
                     Discord
                   </Button>
                 </div>
