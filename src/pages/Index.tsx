@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search, ChevronRight, Star, Clock, Zap } from 'lucide-react';
+import { Search, ChevronRight, Star, Clock, Zap, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Index = () => {
