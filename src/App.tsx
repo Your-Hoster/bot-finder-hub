@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { CookieProvider } from "./contexts/CookieContext";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -32,9 +32,10 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
+                  {/* Redirects for login and register */}
+                  <Route path="/login" element={<Navigate to="/auth" />} />
+                  <Route path="/register" element={<Navigate to="/auth" />} />
                   {/* Add additional routes here */}
-                  {/* <Route path="/login" element={<Login />} /> */}
-                  {/* <Route path="/register" element={<Register />} /> */}
                   {/* <Route path="/bots" element={<Bots />} /> */}
                   {/* <Route path="/bots/:id" element={<BotDetail />} /> */}
                   {/* <Route path="/add-bot" element={<AddBot />} /> */}

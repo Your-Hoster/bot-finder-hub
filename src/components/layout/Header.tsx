@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,6 @@ export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Change header styling when scrolled
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -25,7 +23,6 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when location changes
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location]);
@@ -48,7 +45,6 @@ export const Header = () => {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        {/* Logo */}
         <Link 
           to="/"
           className="text-xl font-bold flex items-center space-x-2 mr-8"
@@ -57,7 +53,6 @@ export const Header = () => {
           <span>Search</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -107,9 +102,7 @@ export const Header = () => {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Right side actions */}
         <div className="flex items-center space-x-2">
-          {/* Search button */}
           <Button 
             variant="ghost" 
             size="icon"
@@ -122,7 +115,6 @@ export const Header = () => {
             </Link>
           </Button>
 
-          {/* Language selector */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
@@ -147,7 +139,6 @@ export const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* User menu (demo) */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
@@ -161,19 +152,18 @@ export const Header = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem asChild>
-                <Link to="/login" className="w-full cursor-pointer">
+                <Link to="/auth" className="w-full cursor-pointer">
                   {t('nav.login')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/register" className="w-full cursor-pointer">
+                <Link to="/auth" className="w-full cursor-pointer">
                   {t('nav.register')}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Mobile menu button */}
           <Button 
             variant="ghost" 
             size="icon"
@@ -186,7 +176,6 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -227,14 +216,14 @@ export const Header = () => {
                 </Link>
                 <div className="pt-2 border-t">
                   <Link 
-                    to="/login"
+                    to="/auth"
                     className="px-4 py-3 rounded-md transition-colors flex items-center"
                   >
                     <User className="h-4 w-4 mr-2" />
                     {t('nav.login')}
                   </Link>
                   <Link 
-                    to="/register"
+                    to="/auth"
                     className="px-4 py-3 rounded-md transition-colors flex items-center"
                   >
                     <Plus className="h-4 w-4 mr-2" />

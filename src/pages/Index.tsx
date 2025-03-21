@@ -12,42 +12,6 @@ const Index = () => {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Sample featured bots
-  const featuredBots = [
-    {
-      id: '123456789',
-      name: 'Moderation Bot',
-      description: 'A powerful moderation bot for your Discord server',
-      tags: ['moderation', 'admin'],
-      stars: 4.5,
-      image: 'https://via.placeholder.com/200'
-    },
-    {
-      id: '987654321',
-      name: 'Music Master',
-      description: 'The best music bot with high-quality audio',
-      tags: ['music', 'audio'],
-      stars: 4.8,
-      image: 'https://via.placeholder.com/200'
-    },
-    {
-      id: '456789123',
-      name: 'Game Stats',
-      description: 'Track game stats and leaderboards',
-      tags: ['games', 'stats'],
-      stars: 4.2,
-      image: 'https://via.placeholder.com/200'
-    },
-    {
-      id: '321654987',
-      name: 'Welcome Bot',
-      description: 'Customize welcome messages for new members',
-      tags: ['welcome', 'greetings'],
-      stars: 4.0,
-      image: 'https://via.placeholder.com/200'
-    }
-  ];
-  
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would navigate to search page with the query
@@ -130,71 +94,6 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Featured Bots Section */}
-      <section className="py-16 bg-secondary/30">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold">
-              <Zap className="inline-block mr-2 h-6 w-6 text-primary" />
-              {t('home.featured')}
-            </h2>
-            <Button asChild variant="ghost">
-              <Link to="/bots" className="group flex items-center">
-                View all
-                <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredBots.map((bot, index) => (
-              <motion.div
-                key={bot.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="h-full card-hover overflow-hidden">
-                  <div className="aspect-video relative overflow-hidden">
-                    <img 
-                      src={bot.image} 
-                      alt={bot.name} 
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                    />
-                  </div>
-                  <CardHeader className="p-4 pb-2">
-                    <CardTitle className="text-lg">{bot.name}</CardTitle>
-                    <div className="flex items-center space-x-1 text-amber-500">
-                      <Star className="h-4 w-4 fill-current" />
-                      <span className="text-sm">{bot.stars}</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-4 pt-0">
-                    <CardDescription className="line-clamp-2">
-                      {bot.description}
-                    </CardDescription>
-                  </CardContent>
-                  <CardFooter className="p-4 pt-0 flex justify-between items-center">
-                    <div className="flex gap-2">
-                      {bot.tags.map(tag => (
-                        <span key={tag} className="inline-block px-2 py-1 text-xs bg-secondary rounded-full">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <Button size="sm" variant="ghost" asChild className="p-0 h-auto">
-                      <Link to={`/bots/${bot.id}`}>
-                        <ChevronRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-      
       {/* Statistics Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
@@ -273,7 +172,7 @@ const Index = () => {
               Join thousands of server owners who are using our platform to find the perfect bots.
             </p>
             <Button asChild size="lg" className="group">
-              <Link to="/register">
+              <Link to="/auth">
                 Create an account
                 <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>

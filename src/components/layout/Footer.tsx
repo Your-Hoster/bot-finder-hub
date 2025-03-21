@@ -48,12 +48,12 @@ export const Footer = () => {
             <h3 className="text-sm font-semibold mb-4">Account</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t('nav.login')}
                 </Link>
               </li>
               <li>
-                <Link to="/register" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t('nav.register')}
                 </Link>
               </li>
