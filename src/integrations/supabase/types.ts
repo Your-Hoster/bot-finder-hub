@@ -9,7 +9,134 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      bots: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          discord_id: string
+          github_url: string | null
+          id: string
+          image_url: string | null
+          invite_url: string | null
+          name: string
+          prefix: string | null
+          short_description: string | null
+          stars: number | null
+          tags: string[] | null
+          updated_at: string | null
+          user_id: string | null
+          verified: boolean | null
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          discord_id: string
+          github_url?: string | null
+          id?: string
+          image_url?: string | null
+          invite_url?: string | null
+          name: string
+          prefix?: string | null
+          short_description?: string | null
+          stars?: number | null
+          tags?: string[] | null
+          updated_at?: string | null
+          user_id?: string | null
+          verified?: boolean | null
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          discord_id?: string
+          github_url?: string | null
+          id?: string
+          image_url?: string | null
+          invite_url?: string | null
+          name?: string
+          prefix?: string | null
+          short_description?: string | null
+          stars?: number | null
+          tags?: string[] | null
+          updated_at?: string | null
+          user_id?: string | null
+          verified?: boolean | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          id: string
+          is_admin: boolean | null
+          updated_at: string | null
+          username: string | null
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          id: string
+          is_admin?: boolean | null
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          is_admin?: boolean | null
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          bot_id: string | null
+          comment: string | null
+          created_at: string | null
+          id: string
+          rating: number
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          bot_id?: string | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          rating: number
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          bot_id?: string | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          rating?: number
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
