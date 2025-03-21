@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -11,7 +12,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Discord } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const loginSchema = z.object({
@@ -142,7 +143,7 @@ const Auth = () => {
 
                 <div className="mt-4">
                   <Button variant="outline" className="w-full" onClick={handleDiscordLogin} disabled={loading}>
-                    <Discord className="mr-2 h-4 w-4" />
+                    <MessageCircle className="mr-2 h-4 w-4" />
                     Discord
                   </Button>
                 </div>
@@ -226,7 +227,7 @@ const Auth = () => {
 
                 <div className="mt-4">
                   <Button variant="outline" className="w-full" onClick={handleDiscordLogin} disabled={loading}>
-                    <Discord className="mr-2 h-4 w-4" />
+                    <MessageCircle className="mr-2 h-4 w-4" />
                     Discord
                   </Button>
                 </div>
