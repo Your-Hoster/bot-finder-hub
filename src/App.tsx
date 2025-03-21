@@ -10,12 +10,14 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { Layout } from "./components/layout/Layout";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import AuthCallback from "./pages/AuthCallback";
+import AddBot from "./pages/AddBot";
+import Bots from "./pages/Bots";
 import NotFound from "./pages/NotFound";
 
 // Import additional pages when created
-// import Bots from "./pages/Bots";
 // import Register from "./pages/Register";
-// import Bots from "./pages/Bots";
+// import BotDetail from "./pages/BotDetail";
 
 const queryClient = new QueryClient();
 
@@ -32,13 +34,14 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route path="/add-bot" element={<AddBot />} />
+                  <Route path="/bots" element={<Bots />} />
                   {/* Redirects for login and register */}
                   <Route path="/login" element={<Navigate to="/auth" />} />
                   <Route path="/register" element={<Navigate to="/auth" />} />
                   {/* Add additional routes here */}
-                  {/* <Route path="/bots" element={<Bots />} /> */}
                   {/* <Route path="/bots/:id" element={<BotDetail />} /> */}
-                  {/* <Route path="/add-bot" element={<AddBot />} /> */}
                   {/* <Route path="/admin/*" element={<Admin />} /> */}
                   {/* <Route path="/profile" element={<Profile />} /> */}
                   {/* <Route path="/search" element={<Search />} /> */}

@@ -1,6 +1,6 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Session, User } from '@supabase/supabase-js';
+import { Session, User, Provider } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -10,9 +10,11 @@ type AuthContextType = {
   user: User | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, username?: string) => Promise<void>;
+  signInWithDiscord: () => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
   isAdmin: boolean;
+  bumpBot: (botId: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log('Auth state changed:', event, currentSession);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
@@ -41,6 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log('Got existing session:', currentSession);
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
@@ -83,12 +87,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw error;
       }
       
-      navigate('/');
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in.",
       });
+      navigate('/');
     } catch (error: any) {
+      console.error('Sign in error:', error);
       toast({
         title: "Sign in failed",
         description: error.message || "An error occurred during sign in.",
@@ -122,12 +127,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       navigate('/');
     } catch (error: any) {
+      console.error('Sign up error:', error);
       toast({
         title: "Sign up failed",
         description: error.message || "An error occurred during sign up.",
         variant: "destructive",
       });
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const signInWithDiscord = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'discord',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      console.error('Discord sign in error:', error);
+      toast({
+        title: "Discord sign in failed",
+        description: error.message || "An error occurred during sign in with Discord.",
+        variant: "destructive",
+      });
       setLoading(false);
     }
   };
@@ -152,14 +182,51 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const bumpBot = async (botId: string) => {
+    try {
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "You need to be logged in to bump a bot.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('bots')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', botId)
+        .eq('user_id', user.id);
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Bot bumped successfully!",
+        description: "Your bot has been bumped to the top of the list.",
+      });
+    } catch (error: any) {
+      console.error('Error bumping bot:', error);
+      toast({
+        title: "Error bumping bot",
+        description: error.message || "An error occurred while bumping your bot.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const value = {
     session,
     user,
     signIn,
     signUp,
+    signInWithDiscord,
     signOut,
     loading,
     isAdmin,
+    bumpBot,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

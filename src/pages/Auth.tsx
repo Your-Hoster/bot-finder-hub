@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
@@ -13,6 +12,8 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { DiscordLogoIcon } from '@radix-ui/react-icons';
+import { Separator } from '@/components/ui/separator';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -34,7 +35,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const Auth = () => {
   const { t } = useLanguage();
-  const { signIn, signUp, loading } = useAuth();
+  const { signIn, signUp, signInWithDiscord, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
 
   // Login form
@@ -63,6 +64,10 @@ const Auth = () => {
 
   const onRegisterSubmit = async (values: RegisterFormValues) => {
     await signUp(values.email, values.password, values.username);
+  };
+
+  const handleDiscordLogin = async () => {
+    await signInWithDiscord();
   };
 
   return (
@@ -126,6 +131,24 @@ const Auth = () => {
                     </Button>
                   </form>
                 </Form>
+
+                <div className="mt-4 relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <Button variant="outline" className="w-full" onClick={handleDiscordLogin} disabled={loading}>
+                    <DiscordLogoIcon className="mr-2 h-4 w-4" />
+                    Discord
+                  </Button>
+                </div>
               </TabsContent>
               
               <TabsContent value="register">
@@ -192,6 +215,24 @@ const Auth = () => {
                     </Button>
                   </form>
                 </Form>
+
+                <div className="mt-4 relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <Button variant="outline" className="w-full" onClick={handleDiscordLogin} disabled={loading}>
+                    <DiscordLogoIcon className="mr-2 h-4 w-4" />
+                    Discord
+                  </Button>
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
