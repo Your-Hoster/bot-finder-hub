@@ -1,6 +1,6 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Session, User, Provider } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -11,10 +11,19 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, username?: string) => Promise<void>;
   signInWithDiscord: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
   isAdmin: boolean;
   bumpBot: (botId: string) => Promise<void>;
+  updateProfile: (profile: Partial<ProfileData>) => Promise<void>;
+};
+
+type ProfileData = {
+  username?: string;
+  avatar_url?: string;
+  bio?: string;
+  website?: string;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -88,15 +97,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
+        title: "Willkommen zurück!",
+        description: "Sie haben sich erfolgreich angemeldet.",
       });
       navigate('/');
     } catch (error: any) {
       console.error('Sign in error:', error);
       toast({
-        title: "Sign in failed",
-        description: error.message || "An error occurred during sign in.",
+        title: "Anmeldung fehlgeschlagen",
+        description: error.message || "Bei der Anmeldung ist ein Fehler aufgetreten.",
         variant: "destructive",
       });
     } finally {
@@ -122,15 +131,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       toast({
-        title: "Account created!",
-        description: "Please check your email to confirm your account.",
+        title: "Konto erstellt!",
+        description: "Bitte überprüfen Sie Ihre E-Mail, um Ihr Konto zu bestätigen.",
       });
       navigate('/');
     } catch (error: any) {
       console.error('Sign up error:', error);
       toast({
-        title: "Sign up failed",
-        description: error.message || "An error occurred during sign up.",
+        title: "Registrierung fehlgeschlagen",
+        description: error.message || "Bei der Registrierung ist ein Fehler aufgetreten.",
         variant: "destructive",
       });
     } finally {
@@ -154,8 +163,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: any) {
       console.error('Discord sign in error:', error);
       toast({
-        title: "Discord sign in failed",
-        description: error.message || "An error occurred during sign in with Discord.",
+        title: "Discord-Anmeldung fehlgeschlagen",
+        description: error.message || "Bei der Anmeldung mit Discord ist ein Fehler aufgetreten.",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      console.error('Google sign in error:', error);
+      toast({
+        title: "Google-Anmeldung fehlgeschlagen",
+        description: error.message || "Bei der Anmeldung mit Google ist ein Fehler aufgetreten.",
         variant: "destructive",
       });
       setLoading(false);
@@ -167,14 +200,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       await supabase.auth.signOut();
       toast({
-        title: "Signed out",
-        description: "You have been signed out successfully.",
+        title: "Abgemeldet",
+        description: "Sie wurden erfolgreich abgemeldet.",
       });
       navigate('/');
     } catch (error: any) {
       toast({
-        title: "Error signing out",
-        description: error.message || "An error occurred during sign out.",
+        title: "Fehler beim Abmelden",
+        description: error.message || "Beim Abmelden ist ein Fehler aufgetreten.",
         variant: "destructive",
       });
     } finally {
@@ -186,8 +219,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       if (!user) {
         toast({
-          title: "Authentication required",
-          description: "You need to be logged in to bump a bot.",
+          title: "Authentifizierung erforderlich",
+          description: "Sie müssen angemeldet sein, um einen Bot zu bumpen.",
           variant: "destructive",
         });
         return;
@@ -204,14 +237,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       toast({
-        title: "Bot bumped successfully!",
-        description: "Your bot has been bumped to the top of the list.",
+        title: "Bot erfolgreich gebumpt!",
+        description: "Ihr Bot wurde an die Spitze der Liste gebumpt.",
       });
     } catch (error: any) {
       console.error('Error bumping bot:', error);
       toast({
-        title: "Error bumping bot",
-        description: error.message || "An error occurred while bumping your bot.",
+        title: "Fehler beim Bumpen des Bots",
+        description: error.message || "Beim Bumpen Ihres Bots ist ein Fehler aufgetreten.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateProfile = async (profile: Partial<ProfileData>) => {
+    try {
+      if (!user) {
+        toast({
+          title: "Authentifizierung erforderlich",
+          description: "Sie müssen angemeldet sein, um Ihr Profil zu aktualisieren.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(profile)
+        .eq('id', user.id);
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Profil aktualisiert",
+        description: "Ihr Profil wurde erfolgreich aktualisiert.",
+      });
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: "Fehler beim Aktualisieren des Profils",
+        description: error.message || "Beim Aktualisieren Ihres Profils ist ein Fehler aufgetreten.",
         variant: "destructive",
       });
     }
@@ -223,10 +290,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signIn,
     signUp,
     signInWithDiscord,
+    signInWithGoogle,
     signOut,
     loading,
     isAdmin,
     bumpBot,
+    updateProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

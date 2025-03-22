@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,9 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Shield, Users, Bot, RefreshCw, Check, X, Server, Trash2, PenLine, Eye } from 'lucide-react';
+import { Shield, Users, Bot, RefreshCw, Check, X, Server, Trash2, PenLine, Eye, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Link } from 'react-router-dom';
 
 const Admin = () => {
   const { t } = useLanguage();
@@ -80,7 +80,7 @@ const Admin = () => {
       // Fetch all bots
       const { data: allBots, error: botsError } = await supabase
         .from('bots')
-        .select('*, profiles(username)')
+        .select('*, profiles:user_id(username)')
         .order('created_at', { ascending: false });
       
       if (botsError) {
@@ -110,7 +110,7 @@ const Admin = () => {
     try {
       const { data, error } = await supabase
         .from('servers')
-        .select('*, profiles(username)')
+        .select('*, profiles:user_id(username)')
         .order('created_at', { ascending: false });
       
       if (error) {
@@ -271,9 +271,25 @@ const Admin = () => {
         transition={{ duration: 0.5 }}
         className="max-w-6xl mx-auto"
       >
-        <div className="flex items-center gap-3 mb-6">
-          <Shield className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold">Admin-Panel</h1>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Shield className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-bold">Admin-Panel</h1>
+          </div>
+          <div className="flex gap-3">
+            <Link to="/add-server">
+              <Button variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                Server hinzufügen
+              </Button>
+            </Link>
+            <Link to="/add-bot">
+              <Button variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                Bot hinzufügen
+              </Button>
+            </Link>
+          </div>
         </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -553,15 +569,23 @@ const Admin = () => {
                     </CardTitle>
                     <CardDescription>Server-Verwaltung</CardDescription>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={fetchServers}
-                    disabled={loadingServers}
-                  >
-                    <RefreshCw className={`h-4 w-4 mr-2 ${loadingServers ? 'animate-spin' : ''}`} />
-                    Aktualisieren
-                  </Button>
+                  <div className="flex gap-2">
+                    <Link to="/add-server">
+                      <Button variant="outline" size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Server hinzufügen
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={fetchServers}
+                      disabled={loadingServers}
+                    >
+                      <RefreshCw className={`h-4 w-4 mr-2 ${loadingServers ? 'animate-spin' : ''}`} />
+                      Aktualisieren
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -652,3 +676,4 @@ const Admin = () => {
 };
 
 export default Admin;
+

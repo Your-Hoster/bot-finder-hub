@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +21,7 @@ import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Imprint from "./pages/Imprint";
+import AccountManager from './pages/AccountManager';
 
 const queryClient = new QueryClient();
 
@@ -39,20 +39,19 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
-                  <Route path="/add-bot" element={<AddBot />} />
                   <Route path="/bots" element={<Bots />} />
-                  <Route path="/bots/:id" element={<BotDetail />} />
+                  <Route path="/bot/:id" element={<BotDetail />} />
+                  <Route path="/add-bot" element={<AddBot />} />
                   <Route path="/servers" element={<Servers />} />
                   <Route path="/add-server" element={<AddServer />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/account" element={<AccountManager />} />
                   <Route path="/admin" element={<Admin />} />
-                  <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/terms" element={<Terms />} />
                   <Route path="/imprint" element={<Imprint />} />
-                  {/* Redirects for login and register */}
                   <Route path="/login" element={<Navigate to="/auth" />} />
                   <Route path="/register" element={<Navigate to="/auth" />} />
-                  {/* Catch-all route for 404 */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Layout>
