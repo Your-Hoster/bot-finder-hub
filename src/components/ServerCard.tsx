@@ -3,7 +3,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Users, ExternalLink } from 'lucide-react';
+import { Users, ExternalLink, MessageCircle, Share2 } from 'lucide-react';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 type ServerCardProps = {
   server: {
@@ -18,12 +20,29 @@ type ServerCardProps = {
 };
 
 const ServerCard = ({ server }: ServerCardProps) => {
+  const { toast } = useToast();
+  const [isHovered, setIsHovered] = useState(false);
+
+  const copyInviteLink = () => {
+    if (server.invite_url) {
+      navigator.clipboard.writeText(server.invite_url);
+      toast({
+        title: "Link kopiert",
+        description: "Einladungslink wurde in die Zwischenablage kopiert.",
+      });
+    }
+  };
+
   return (
-    <Card className="flex flex-col h-full overflow-hidden">
+    <Card 
+      className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-md"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-4">
-            <Avatar className="h-12 w-12">
+            <Avatar className={`h-12 w-12 transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
               <AvatarImage src={server.icon_url || ''} alt={server.name} />
               <AvatarFallback>{server.name.substring(0, 2)}</AvatarFallback>
             </Avatar>
@@ -31,7 +50,7 @@ const ServerCard = ({ server }: ServerCardProps) => {
               <CardTitle className="text-lg">{server.name}</CardTitle>
               <CardDescription className="flex items-center">
                 <Users className="h-3 w-3 mr-1" />
-                {server.member_count?.toLocaleString()} members
+                {server.member_count?.toLocaleString()} Mitglieder
               </CardDescription>
             </div>
           </div>
@@ -39,7 +58,7 @@ const ServerCard = ({ server }: ServerCardProps) => {
       </CardHeader>
       <CardContent className="flex-grow">
         <p className="text-sm text-muted-foreground">
-          {server.description || 'No description provided'}
+          {server.description || 'Keine Beschreibung vorhanden'}
         </p>
         {server.tags && server.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">
@@ -51,16 +70,21 @@ const ServerCard = ({ server }: ServerCardProps) => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="border-t pt-4">
+      <CardFooter className="border-t pt-4 flex gap-2">
         {server.invite_url ? (
-          <Button className="w-full" asChild>
-            <a href={server.invite_url} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Join Server
-            </a>
-          </Button>
+          <>
+            <Button className="flex-1" asChild>
+              <a href={server.invite_url} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Beitreten
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" onClick={copyInviteLink}>
+              <Share2 className="h-4 w-4" />
+            </Button>
+          </>
         ) : (
-          <Button className="w-full" disabled>No Invite Link</Button>
+          <Button className="w-full" disabled>Kein Einladungslink</Button>
         )}
       </CardFooter>
     </Card>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,12 +7,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, Search, Filter, RefreshCw } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import ServerCard from '@/components/ServerCard';
 
-// This is just a mock data array for now
-// In a real implementation, this would come from Supabase
 const mockServers = [
   {
     id: '1',
@@ -78,60 +75,125 @@ const Servers = () => {
   const [servers, setServers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentTag, setCurrentTag] = useState<string | null>(null);
+  const [allTags, setAllTags] = useState<string[]>([]);
   
   useEffect(() => {
-    // In a real implementation, this would fetch from Supabase
-    // For now, we'll use the mock data
-    const fetchServers = async () => {
-      try {
-        // Mock API call delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setServers(mockServers);
-      } catch (error: any) {
-        console.error('Error fetching servers:', error);
-        toast({
-          title: "Error fetching servers",
-          description: "Failed to load servers. Please try again.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    
     fetchServers();
   }, [toast]);
   
-  const filteredServers = servers.filter(server => 
-    server.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    server.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (server.tags && server.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
-  );
+  const fetchServers = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('servers')
+        .select('*')
+        .order('member_count', { ascending: false });
+
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        setServers(data);
+        
+        const tags = new Set<string>();
+        data.forEach(server => {
+          if (server.tags && Array.isArray(server.tags)) {
+            server.tags.forEach((tag: string) => tags.add(tag));
+          }
+        });
+        setAllTags(Array.from(tags));
+      } else {
+        setServers(mockServers);
+        
+        const tags = new Set<string>();
+        mockServers.forEach(server => {
+          if (server.tags && Array.isArray(server.tags)) {
+            server.tags.forEach(tag => tags.add(tag));
+          }
+        });
+        setAllTags(Array.from(tags));
+      }
+    } catch (error: any) {
+      console.error('Error fetching servers:', error);
+      toast({
+        title: "Fehler beim Abrufen der Server",
+        description: "Server konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+        variant: "destructive",
+      });
+      setServers(mockServers);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const filteredServers = servers.filter(server => {
+    const matchesSearch = server.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      server.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesTag = currentTag 
+      ? server.tags && server.tags.includes(currentTag)
+      : true;
+    
+    return matchesSearch && matchesTag;
+  });
 
   return (
     <div className="container py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Discord Servers</h1>
+          <h1 className="text-3xl font-bold">Discord Server</h1>
           <p className="text-muted-foreground mt-2">
-            Browse and join active Discord communities
+            Durchsuchen und trete aktiven Discord-Communities bei
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-          <Input
-            placeholder="Search servers..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full sm:w-64"
-          />
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Server suchen..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-8"
+            />
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={fetchServers}
+            className="hidden sm:flex"
+          >
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Aktualisieren
+          </Button>
           <Button asChild>
             <Link to="/add-server">
               <PlusIcon className="mr-2 h-4 w-4" />
-              Add Server
+              Server hinzufügen
             </Link>
           </Button>
         </div>
       </div>
+      
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          <Button 
+            variant={currentTag === null ? "default" : "outline"} 
+            size="sm"
+            onClick={() => setCurrentTag(null)}
+          >
+            Alle
+          </Button>
+          {allTags.map(tag => (
+            <Button 
+              key={tag} 
+              variant={currentTag === tag ? "default" : "outline"} 
+              size="sm"
+              onClick={() => setCurrentTag(tag === currentTag ? null : tag)}
+            >
+              {tag}
+            </Button>
+          ))}
+        </div>
+      )}
       
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -153,21 +215,24 @@ const Servers = () => {
         </div>
       ) : filteredServers.length === 0 ? (
         <div className="text-center py-12">
-          <h2 className="text-xl font-medium">No servers found</h2>
+          <h2 className="text-xl font-medium">Keine Server gefunden</h2>
           <p className="text-muted-foreground mt-2">
-            {searchTerm ? 
-              `No servers matching "${searchTerm}" were found.` : 
-              'Be the first to add a server to our directory!'
+            {searchTerm || currentTag ? 
+              `Keine Server, die Ihren Suchkriterien entsprechen, wurden gefunden.` : 
+              'Sei der Erste, der einen Server in unser Verzeichnis aufnimmt!'
             }
           </p>
-          {!searchTerm && (
+          {!(searchTerm || currentTag) && (
             <Button className="mt-4" asChild>
-              <Link to="/add-server">Add Your Server</Link>
+              <Link to="/add-server">Deinen Server hinzufügen</Link>
             </Button>
           )}
-          {searchTerm && (
-            <Button className="mt-4" variant="outline" onClick={() => setSearchTerm('')}>
-              Clear Search
+          {(searchTerm || currentTag) && (
+            <Button className="mt-4" variant="outline" onClick={() => {
+              setSearchTerm('');
+              setCurrentTag(null);
+            }}>
+              Filter löschen
             </Button>
           )}
         </div>
