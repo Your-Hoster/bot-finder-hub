@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,6 +12,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { supabase } from '@/integrations/supabase/client';
 
 const serverSchema = z.object({
   name: z.string().min(3, "Server name must be at least 3 characters").max(100),
@@ -66,25 +66,22 @@ const AddServer = () => {
       // Convert comma-separated tags to array
       const tagsArray = values.tags ? values.tags.split(',').map(tag => tag.trim()) : [];
       
-      // For now, we're just simulating a successful submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Insert the server into the Supabase database
+      const { error } = await supabase
+        .from('servers')
+        .insert({
+          name: values.name,
+          description: values.description,
+          invite_url: values.invite_url,
+          icon_url: values.icon_url || null,
+          tags: tagsArray.length > 0 ? tagsArray : null,
+          member_count: parseInt(values.member_count),
+          user_id: user.id,
+        });
       
-      // In a real implementation, this would be a Supabase insert
-      // const { error } = await supabase
-      //   .from('servers')
-      //   .insert({
-      //     name: values.name,
-      //     description: values.description,
-      //     invite_url: values.invite_url,
-      //     icon_url: values.icon_url || null,
-      //     tags: tagsArray.length > 0 ? tagsArray : null,
-      //     member_count: parseInt(values.member_count),
-      //     user_id: user.id,
-      //   });
-      
-      // if (error) {
-      //   throw error;
-      // }
+      if (error) {
+        throw error;
+      }
 
       toast({
         title: "Server added successfully!",

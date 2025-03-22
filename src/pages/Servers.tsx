@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -95,6 +96,7 @@ const Servers = () => {
       if (data && data.length > 0) {
         setServers(data);
         
+        // Extract all unique tags from servers
         const tags = new Set<string>();
         data.forEach(server => {
           if (server.tags && Array.isArray(server.tags)) {
@@ -103,8 +105,10 @@ const Servers = () => {
         });
         setAllTags(Array.from(tags));
       } else {
+        // Use mock data if no servers are found
         setServers(mockServers);
         
+        // Extract all unique tags from mock servers
         const tags = new Set<string>();
         mockServers.forEach(server => {
           if (server.tags && Array.isArray(server.tags)) {

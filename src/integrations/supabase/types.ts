@@ -137,6 +137,45 @@ export type Database = {
           },
         ]
       }
+      servers: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon_url: string | null
+          id: string
+          invite_url: string | null
+          member_count: number | null
+          name: string
+          tags: string[] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          invite_url?: string | null
+          member_count?: number | null
+          name: string
+          tags?: string[] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          invite_url?: string | null
+          member_count?: number | null
+          name?: string
+          tags?: string[] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
