@@ -14,6 +14,8 @@ import AuthCallback from "./pages/AuthCallback";
 import AddBot from "./pages/AddBot";
 import Bots from "./pages/Bots";
 import BotDetail from "./pages/BotDetail";
+import Servers from "./pages/Servers";
+import AddServer from "./pages/AddServer";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
@@ -40,6 +42,8 @@ const App = () => (
                   <Route path="/add-bot" element={<AddBot />} />
                   <Route path="/bots" element={<Bots />} />
                   <Route path="/bots/:id" element={<BotDetail />} />
+                  <Route path="/servers" element={<Servers />} />
+                  <Route path="/add-server" element={<AddServer />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/terms" element={<Terms />} />

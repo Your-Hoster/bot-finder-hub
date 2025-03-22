@@ -37,19 +37,32 @@ const BotDetail = () => {
     try {
       setLoading(true);
       
-      const { data, error } = await supabase
+      // First fetch the bot details
+      const { data: botData, error: botError } = await supabase
         .from('bots')
-        .select('*, profiles(*)')
+        .select('*')
         .eq('id', id)
         .single();
       
-      if (error) {
-        throw error;
+      if (botError) {
+        throw botError;
       }
       
-      setBot(data);
-      setOwner(data.profiles);
-      setIsOwner(user?.id === data.user_id);
+      setBot(botData);
+      setIsOwner(user?.id === botData.user_id);
+      
+      // Then fetch owner profile separately
+      if (botData.user_id) {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', botData.user_id)
+          .single();
+        
+        if (!profileError) {
+          setOwner(profileData);
+        }
+      }
     } catch (error: any) {
       console.error('Error fetching bot details:', error);
       toast({
