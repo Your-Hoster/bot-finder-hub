@@ -64,6 +64,7 @@ const BotDetail = () => {
         // Handle the profiles data safely and ensure support_url exists
         const botData: Bot = {
           ...data,
+          // Ensure support_url is included, even if it's null
           support_url: data.support_url || null,
           profiles: data.profiles && typeof data.profiles === 'object' 
             ? data.profiles 
