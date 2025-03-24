@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -61,17 +62,18 @@ const BotDetail = () => {
           throw error;
         }
         
-        // Handle the profiles data safely and ensure support_url exists
-        const botData: Bot = {
+        // Make sure data contains all required fields by checking and setting default values
+        const botData = {
           ...data,
-          // Ensure support_url is included, even if it's null
+          // Explicitly add support_url even if it might not exist in data
           support_url: data.support_url || null,
+          // Properly handle profiles data
           profiles: data.profiles && typeof data.profiles === 'object' 
             ? data.profiles 
             : { username: null }
         };
         
-        setBot(botData);
+        setBot(botData as Bot);
       } catch (error: any) {
         console.error('Error fetching bot:', error);
         toast({
