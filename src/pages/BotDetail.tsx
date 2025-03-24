@@ -62,11 +62,16 @@ const BotDetail = () => {
           throw error;
         }
         
-        // Add support_url if it doesn't exist in the data
-        setBot({
+        // Handle the profiles data safely and ensure support_url exists
+        const botData: Bot = {
           ...data,
-          support_url: data.support_url || null
-        });
+          support_url: data.support_url || null,
+          profiles: data.profiles && typeof data.profiles === 'object' 
+            ? data.profiles 
+            : { username: null }
+        };
+        
+        setBot(botData);
       } catch (error: any) {
         console.error('Error fetching bot:', error);
         toast({
