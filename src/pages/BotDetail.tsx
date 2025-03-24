@@ -30,7 +30,7 @@ type Bot = {
   verified: boolean | null;
   created_at: string | null;
   updated_at: string | null;
-  profiles: {
+  profiles?: {
     username: string | null;
   } | null;
 };
@@ -62,7 +62,11 @@ const BotDetail = () => {
           throw error;
         }
         
-        setBot(data);
+        // Add support_url if it doesn't exist in the data
+        setBot({
+          ...data,
+          support_url: data.support_url || null
+        });
       } catch (error: any) {
         console.error('Error fetching bot:', error);
         toast({
@@ -143,20 +147,20 @@ const BotDetail = () => {
       <Card className="max-w-4xl mx-auto">
         <CardHeader className="flex flex-row items-start gap-6">
           <Avatar className="h-24 w-24 border-2 border-primary">
-            <AvatarImage src={bot.image_url || ''} alt={bot.name} />
-            <AvatarFallback className="text-2xl">{bot.name.substring(0, 2)}</AvatarFallback>
+            <AvatarImage src={bot?.image_url || ''} alt={bot?.name} />
+            <AvatarFallback className="text-2xl">{bot?.name.substring(0, 2)}</AvatarFallback>
           </Avatar>
           
           <div className="space-y-2 flex-1">
             <div className="flex justify-between items-start">
               <div>
-                <CardTitle className="text-3xl">{bot.name}</CardTitle>
-                <CardDescription className="text-lg">{bot.short_description}</CardDescription>
+                <CardTitle className="text-3xl">{bot?.name}</CardTitle>
+                <CardDescription className="text-lg">{bot?.short_description}</CardDescription>
               </div>
               
-              {isOwner(bot.user_id) && (
+              {isOwner(bot?.user_id) && (
                 <Button variant="outline" asChild>
-                  <Link to={`/bot/${bot.id}/edit`}>{t('bot.edit')}</Link>
+                  <Link to={`/bot/${bot?.id}/edit`}>{t('bot.edit')}</Link>
                 </Button>
               )}
             </div>
@@ -164,21 +168,21 @@ const BotDetail = () => {
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <div className="flex items-center">
                 <Star className="h-4 w-4 mr-1 text-yellow-500" />
-                {bot.stars || 0} {t('bot.stars')}
+                {bot?.stars || 0} {t('bot.stars')}
               </div>
               
               <div>
-                {t('bot.prefix')}: <span className="font-mono bg-muted px-1 rounded">{bot.prefix || '/'}</span>
+                {t('bot.prefix')}: <span className="font-mono bg-muted px-1 rounded">{bot?.prefix || '/'}</span>
               </div>
               
-              {bot.verified && (
+              {bot?.verified && (
                 <Badge variant="outline" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
                   {t('bot.verified')}
                 </Badge>
               )}
             </div>
             
-            {bot.tags && bot.tags.length > 0 && (
+            {bot?.tags && bot.tags.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {bot.tags.map(tag => (
                   <Badge key={tag} variant="secondary" className="text-xs">
@@ -194,12 +198,12 @@ const BotDetail = () => {
           <div>
             <h3 className="text-lg font-medium mb-2">{t('bot.description')}</h3>
             <div className="prose prose-sm dark:prose-invert max-w-none">
-              {bot.description || bot.short_description || t('bot.no-description')}
+              {bot?.description || bot?.short_description || t('bot.no-description')}
             </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {bot.invite_url && (
+            {bot?.invite_url && (
               <Button className="w-full" asChild>
                 <a href={bot.invite_url} target="_blank" rel="noopener noreferrer">
                   {t('bot.invite')}
@@ -207,7 +211,7 @@ const BotDetail = () => {
               </Button>
             )}
             
-            {bot.support_url && (
+            {bot?.support_url && (
               <Button variant="outline" className="w-full" asChild>
                 <a href={bot.support_url} target="_blank" rel="noopener noreferrer">
                   <MessageSquare className="mr-2 h-4 w-4" />
@@ -216,7 +220,7 @@ const BotDetail = () => {
               </Button>
             )}
             
-            {bot.website_url && (
+            {bot?.website_url && (
               <Button variant="outline" className="w-full" asChild>
                 <a href={bot.website_url} target="_blank" rel="noopener noreferrer">
                   <Globe className="mr-2 h-4 w-4" />
@@ -225,7 +229,7 @@ const BotDetail = () => {
               </Button>
             )}
             
-            {bot.github_url && (
+            {bot?.github_url && (
               <Button variant="outline" className="w-full" asChild>
                 <a href={bot.github_url} target="_blank" rel="noopener noreferrer">
                   <Github className="mr-2 h-4 w-4" />
@@ -238,13 +242,13 @@ const BotDetail = () => {
         
         <CardFooter className="border-t pt-6 flex flex-col items-start gap-2">
           <div className="text-sm text-muted-foreground">
-            {t('bot.owner')}: <span className="font-medium">{bot.profiles?.username || t('bot.unknown')}</span>
+            {t('bot.owner')}: <span className="font-medium">{bot?.profiles?.username || t('bot.unknown')}</span>
           </div>
           <div className="text-sm text-muted-foreground">
-            {t('bot.created')}: {formatDate(bot.created_at)}
+            {t('bot.created')}: {formatDate(bot?.created_at)}
           </div>
           <div className="text-sm text-muted-foreground">
-            {t('bot.updated')}: {formatDate(bot.updated_at)}
+            {t('bot.updated')}: {formatDate(bot?.updated_at)}
           </div>
         </CardFooter>
       </Card>
