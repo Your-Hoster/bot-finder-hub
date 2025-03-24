@@ -1,232 +1,390 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Settings, Key, LogOut } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { 
+  UserIcon, 
+  Settings, 
+  Lock, 
+  LogOut, 
+  Save, 
+  Trash2, 
+  User, 
+  AtSign, 
+  Globe, 
+  FileText,
+  Moon,
+  Sun,
+  Monitor,
+  Languages
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+
+interface Profile {
+  id: string;
+  username: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  website: string | null;
+  created_at: string;
+  updated_at: string;
+  is_admin: boolean;
+}
 
 const AccountManager = () => {
-  const { t } = useLanguage();
-  const { user, updateProfile, signOut } = useAuth();
-  const { toast } = useToast();
+  const { t, language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
+  const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('profile');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
   
-  // Profile form state
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [activeTab, setActiveTab] = useState('profile');
+  
+  // Form states
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
   const [website, setWebsite] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
-
-  // Submit handler for profile update
-  const handleProfileUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  
+  useEffect(() => {
+    if (!user && !authLoading) {
+      navigate('/auth');
+      return;
+    }
+    
+    if (user) {
+      fetchProfile();
+    }
+  }, [user, authLoading, navigate]);
+  
+  const fetchProfile = async () => {
+    if (!user) return;
     
     try {
-      await updateProfile({
-        username: username || undefined,
-        bio: bio || undefined,
-        website: website || undefined,
-        avatar_url: avatarUrl || undefined
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      if (error) {
+        throw error;
+      }
+      
+      setProfile(data);
+      setUsername(data.username || '');
+      setBio(data.bio || '');
+      setWebsite(data.website || '');
+    } catch (error: any) {
+      console.error('Error fetching profile:', error);
+      toast({
+        title: t('profile.error-fetching'),
+        description: error.message || t('misc.error'),
+        variant: "destructive",
       });
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
-
-  // If no user is logged in, redirect to login
-  if (!user) {
-    navigate('/auth');
-    return null;
+  
+  const updateProfile = async () => {
+    if (!user) return;
+    
+    try {
+      setUpdating(true);
+      
+      // Prepare the profile data
+      const updates = {
+        username,
+        bio,
+        website,
+        updated_at: new Date().toISOString()
+      };
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id);
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast({
+        title: t('profile.updated'),
+        description: t('profile.update-success'),
+      });
+      
+      await fetchProfile();
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: t('profile.update-failed'),
+        description: error.message || t('misc.error'),
+        variant: "destructive",
+      });
+    } finally {
+      setUpdating(false);
+    }
+  };
+  
+  const handleLanguageChange = (value: string) => {
+    setLanguage(value as 'en' | 'de' | 'es');
+  };
+  
+  const handleThemeChange = (value: string) => {
+    setTheme(value as 'light' | 'dark' | 'system');
+  };
+  
+  const handleSignOut = async () => {
+    await signOut();
+  };
+  
+  if (loading || authLoading) {
+    return (
+      <div className="container py-12 flex justify-center">
+        <div>{t('misc.loading')}</div>
+      </div>
+    );
+  }
+  
+  if (!profile) {
+    return (
+      <div className="container py-12 flex justify-center">
+        <div>{t('profile.not-found')}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="container py-12 max-w-4xl">
+    <div className="container py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto"
       >
-        <div className="flex items-center gap-3 mb-6">
-          <User className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold">Konto-Verwaltung</h1>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <UserIcon className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-bold">{t('account.title')}</h1>
+          </div>
+          <Button variant="outline" onClick={handleSignOut}>
+            <LogOut className="mr-2 h-4 w-4" />
+            {t('nav.logout')}
+          </Button>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
-          <Card className="h-fit">
-            <CardContent className="p-6 flex flex-col items-center space-y-4">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={user.user_metadata?.avatar_url || ''} />
-                <AvatarFallback>
-                  {user.email ? user.email.substring(0, 2).toUpperCase() : 'U'}
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-center">
-                <p className="text-lg font-medium">{user.user_metadata?.username || user.email}</p>
-                <p className="text-sm text-muted-foreground">{user.email}</p>
-              </div>
-              
-              <Button 
-                variant="destructive" 
-                className="w-full mt-4" 
-                onClick={signOut}
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Abmelden
-              </Button>
-            </CardContent>
-          </Card>
+        
+        <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6">
+          <div className="space-y-4">
+            <Card>
+              <CardContent className="p-4 flex flex-col items-center text-center">
+                <Avatar className="h-24 w-24 mb-4">
+                  <AvatarImage src={profile.avatar_url || ''} />
+                  <AvatarFallback>
+                    {profile.username ? profile.username.substring(0, 2).toUpperCase() : 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <h3 className="font-medium text-lg">{profile.username || t('profile.no-username')}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {t('profile.member-since')} {new Date(profile.created_at).toLocaleDateString()}
+                </p>
+                {profile.is_admin && (
+                  <Badge className="mt-2 bg-primary">{t('admin.administrator')}</Badge>
+                )}
+              </CardContent>
+            </Card>
+            
+            <Tabs value={activeTab} onValueChange={setActiveTab} orientation="vertical" className="w-full">
+              <TabsList className="flex flex-col h-auto w-full bg-transparent space-y-1 p-0">
+                <TabsTrigger 
+                  value="profile" 
+                  className="justify-start w-full border border-transparent data-[state=active]:border-primary/20 data-[state=active]:bg-primary/5"
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  {t('account.profile')}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="settings" 
+                  className="justify-start w-full border border-transparent data-[state=active]:border-primary/20 data-[state=active]:bg-primary/5"
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  {t('account.settings')}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="security" 
+                  className="justify-start w-full border border-transparent data-[state=active]:border-primary/20 data-[state=active]:bg-primary/5"
+                >
+                  <Lock className="mr-2 h-4 w-4" />
+                  {t('account.security')}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
           
-          <Card>
-            <CardHeader>
-              <CardTitle>Profil & Einstellungen</CardTitle>
-              <CardDescription>
-                Verwalten Sie Ihre persönlichen Informationen und Kontoeinstellungen
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="mb-6">
-                  <TabsTrigger value="profile">
-                    <User className="h-4 w-4 mr-2" />
-                    Profil
-                  </TabsTrigger>
-                  <TabsTrigger value="settings">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Einstellungen
-                  </TabsTrigger>
-                  <TabsTrigger value="security">
-                    <Key className="h-4 w-4 mr-2" />
-                    Sicherheit
-                  </TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="profile">
-                  <form onSubmit={handleProfileUpdate} className="space-y-6">
-                    <div className="space-y-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="username">Benutzername</Label>
-                        <Input 
-                          id="username" 
-                          value={username} 
-                          onChange={(e) => setUsername(e.target.value)}
-                          placeholder={user.user_metadata?.username || 'Benutzername'}
-                        />
-                      </div>
-                      
-                      <div className="grid gap-2">
-                        <Label htmlFor="bio">Über mich</Label>
-                        <Textarea 
-                          id="bio" 
-                          value={bio} 
-                          onChange={(e) => setBio(e.target.value)}
-                          placeholder="Kurze Beschreibung über Sie"
-                          className="min-h-[100px]"
-                        />
-                      </div>
-                      
-                      <div className="grid gap-2">
-                        <Label htmlFor="website">Website</Label>
-                        <Input 
-                          id="website" 
-                          type="url" 
-                          value={website} 
-                          onChange={(e) => setWebsite(e.target.value)}
-                          placeholder="https://example.com" 
-                        />
-                      </div>
-                      
-                      <div className="grid gap-2">
-                        <Label htmlFor="avatar">Avatar URL</Label>
-                        <Input 
-                          id="avatar" 
-                          type="url" 
-                          value={avatarUrl} 
-                          onChange={(e) => setAvatarUrl(e.target.value)}
-                          placeholder="https://example.com/avatar.png" 
-                        />
-                      </div>
+          <div>
+            <TabsContent value="profile" className="m-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('account.profile')}</CardTitle>
+                  <CardDescription>{t('account.profile-description')}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="username">{t('auth.username')}</Label>
+                    <div className="relative">
+                      <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                      <Input 
+                        id="username" 
+                        placeholder={t('auth.username-placeholder')}
+                        className="pl-10"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                      />
                     </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="bio">{t('profile.bio')}</Label>
+                    <div className="relative">
+                      <FileText className="absolute left-3 top-3 text-muted-foreground h-4 w-4" />
+                      <Textarea 
+                        id="bio" 
+                        placeholder={t('profile.bio-placeholder')}
+                        className="pl-10 min-h-[120px]"
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">{t('profile.bio-help')}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="website">{t('profile.website')}</Label>
+                    <div className="relative">
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                      <Input 
+                        id="website" 
+                        placeholder="https://example.com"
+                        className="pl-10"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button onClick={updateProfile} disabled={updating} className="mt-4">
+                    {updating ? t('misc.loading') : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        {t('account.save')}
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="settings" className="m-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('account.settings')}</CardTitle>
+                  <CardDescription>{t('account.settings-description')}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="language">{t('account.language')}</Label>
+                    <div className="flex items-center gap-2">
+                      <Languages className="h-4 w-4 text-muted-foreground" />
+                      <Select value={language} onValueChange={handleLanguageChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={t('account.select-language')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="en">English</SelectItem>
+                          <SelectItem value="de">Deutsch</SelectItem>
+                          <SelectItem value="es">Español</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="theme">{t('account.theme')}</Label>
+                    <div className="flex items-center gap-2">
+                      {theme === 'light' && <Sun className="h-4 w-4 text-muted-foreground" />}
+                      {theme === 'dark' && <Moon className="h-4 w-4 text-muted-foreground" />}
+                      {theme === 'system' && <Monitor className="h-4 w-4 text-muted-foreground" />}
+                      <Select value={theme} onValueChange={handleThemeChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={t('account.select-theme')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="light">
+                            <div className="flex items-center">
+                              <Sun className="h-4 w-4 mr-2" />
+                              {t('account.theme.light')}
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="dark">
+                            <div className="flex items-center">
+                              <Moon className="h-4 w-4 mr-2" />
+                              {t('account.theme.dark')}
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="system">
+                            <div className="flex items-center">
+                              <Monitor className="h-4 w-4 mr-2" />
+                              {t('account.theme.system')}
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="security" className="m-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('account.security')}</CardTitle>
+                  <CardDescription>{t('account.security-description')}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-md border border-amber-200 dark:border-amber-800">
+                    <h3 className="font-medium text-amber-800 dark:text-amber-400">{t('account.account-actions')}</h3>
+                    <p className="text-sm text-amber-700 dark:text-amber-500 mt-1">{t('account.danger-zone')}</p>
                     
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting ? "Speichern..." : "Profil aktualisieren"}
+                    <Separator className="my-4 bg-amber-200 dark:bg-amber-800" />
+                    
+                    <Button variant="destructive" className="mt-2">
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      {t('account.delete')}
                     </Button>
-                  </form>
-                </TabsContent>
-                
-                <TabsContent value="settings">
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-medium">Sprache</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Wählen Sie Ihre bevorzugte Sprache für die Benutzeroberfläche
-                      </p>
-                      <div className="flex gap-2 mt-2">
-                        <Button variant="outline">Deutsch</Button>
-                        <Button variant="outline">English</Button>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-medium">Benachrichtigungen</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Verwalten Sie Ihre E-Mail-Benachrichtigungseinstellungen
-                      </p>
-                      <div className="mt-2">
-                        <Button variant="outline">Einstellungen öffnen</Button>
-                      </div>
-                    </div>
                   </div>
-                </TabsContent>
-                
-                <TabsContent value="security">
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-medium">Passwort ändern</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Aktualisieren Sie Ihr Passwort für eine verbesserte Sicherheit
-                      </p>
-                      <div className="mt-2">
-                        <Button variant="outline">Passwort ändern</Button>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-medium">Verbundene Konten</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Verwalten Sie Ihre verbundenen sozialen Medienkonten
-                      </p>
-                      <div className="flex gap-2 mt-2">
-                        <Button variant="outline">Discord</Button>
-                        <Button variant="outline">Google</Button>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-medium text-destructive">Gefahrenzone</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Löschen Sie Ihr Konto und alle zugehörigen Daten
-                      </p>
-                      <div className="mt-2">
-                        <Button variant="destructive">Konto löschen</Button>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </div>
         </div>
       </motion.div>
     </div>

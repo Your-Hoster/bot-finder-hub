@@ -1,305 +1,253 @@
 
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { motion } from 'framer-motion';
-import { 
-  Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle 
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Bot, ExternalLink, Github, Globe, MessageSquare, Calendar, 
-  Star, Share2, ArrowUpCircle
-} from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ArrowLeft, ExternalLink, Github, Globe, Star, MessageSquare } from 'lucide-react';
+
+type Bot = {
+  id: string;
+  name: string;
+  discord_id: string;
+  short_description: string | null;
+  description: string | null;
+  image_url: string | null;
+  tags: string[] | null;
+  invite_url: string | null;
+  support_url: string | null;
+  website_url: string | null;
+  github_url: string | null;
+  prefix: string | null;
+  user_id: string | null;
+  stars: number | null;
+  verified: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
+  profiles: {
+    username: string | null;
+  } | null;
+};
 
 const BotDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { t } = useLanguage();
-  const { user, bumpBot } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const { toast } = useToast();
-  
-  const [bot, setBot] = useState<any>(null);
+  const [bot, setBot] = useState<Bot | null>(null);
   const [loading, setLoading] = useState(true);
-  const [owner, setOwner] = useState<any>(null);
-  const [isOwner, setIsOwner] = useState(false);
-
+  
   useEffect(() => {
-    fetchBotDetails();
-  }, [id]);
-
-  const fetchBotDetails = async () => {
-    try {
-      setLoading(true);
-      
-      // First fetch the bot details
-      const { data: botData, error: botError } = await supabase
-        .from('bots')
-        .select('*')
-        .eq('id', id)
-        .single();
-      
-      if (botError) {
-        throw botError;
-      }
-      
-      setBot(botData);
-      setIsOwner(user?.id === botData.user_id);
-      
-      // Then fetch owner profile separately
-      if (botData.user_id) {
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', botData.user_id)
+    const fetchBot = async () => {
+      try {
+        setLoading(true);
+        
+        if (!id) {
+          throw new Error("Bot ID not provided");
+        }
+        
+        const { data, error } = await supabase
+          .from('bots')
+          .select('*, profiles:user_id(username)')
+          .eq('id', id)
           .single();
         
-        if (!profileError) {
-          setOwner(profileData);
+        if (error) {
+          throw error;
         }
+        
+        setBot(data);
+      } catch (error: any) {
+        console.error('Error fetching bot:', error);
+        toast({
+          title: t('misc.error'),
+          description: error.message || t('misc.error'),
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      console.error('Error fetching bot details:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load bot details. Please try again.",
-        variant: "destructive",
-      });
-      navigate('/bots');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleBumpBot = async () => {
-    if (!id) return;
+    };
     
-    try {
-      await bumpBot(id);
-      toast({
-        title: "Success",
-        description: "Bot has been bumped successfully!",
-      });
-      fetchBotDetails(); // Refresh to show updated timestamp
-    } catch (error) {
-      console.error('Error bumping bot:', error);
-    }
+    fetchBot();
+  }, [id, toast, t]);
+  
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return t('misc.unknown');
+    return new Date(dateString).toLocaleDateString();
   };
-
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Link copied",
-      description: "Bot link has been copied to clipboard!",
-    });
-  };
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString(undefined, {
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric'
-    });
+  
+  const isOwner = (botUserId: string | null) => {
+    return user && botUserId === user.id;
   };
 
   if (loading) {
     return (
-      <div className="container py-12 flex justify-center">
-        <div>{t('misc.loading')}</div>
-      </div>
-    );
-  }
-
-  if (!bot) {
-    return (
-      <div className="container py-12">
-        <Card>
-          <CardContent className="py-12 text-center">
-            <h2 className="text-2xl font-bold mb-2">{t('bots.not-found')}</h2>
-            <p className="text-muted-foreground mb-6">{t('bots.bot-not-found')}</p>
-            <Button onClick={() => navigate('/bots')}>
-              {t('misc.back-to-bots')}
-            </Button>
+      <div className="container py-8">
+        <Card className="max-w-4xl mx-auto">
+          <CardHeader className="flex flex-row items-start gap-4">
+            <Skeleton className="h-24 w-24 rounded-full" />
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-8 w-1/3" />
+              <Skeleton className="h-4 w-1/2" />
+              <div className="flex gap-2">
+                <Skeleton className="h-6 w-20" />
+                <Skeleton className="h-6 w-20" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <Skeleton className="h-32 w-full" />
+            <div className="grid grid-cols-2 gap-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
           </CardContent>
         </Card>
       </div>
     );
   }
 
+  if (!bot) {
+    return (
+      <div className="container py-12 flex flex-col items-center justify-center">
+        <h2 className="text-2xl font-bold mb-4">{t('bot.not-found')}</h2>
+        <p className="text-muted-foreground mb-8">{t('bot.not-found-description')}</p>
+        <Button asChild>
+          <Link to="/bots">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {t('misc.back')}
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <div className="container py-12">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col-reverse md:flex-row gap-6">
-            {/* Bot details card */}
-            <Card className="flex-1">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Bot className="h-6 w-6 text-primary" />
-                    <CardTitle className="text-2xl">{bot.name}</CardTitle>
-                    {bot.verified && (
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                        {t('bots.verified')}
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={handleShare}>
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    {isOwner && (
-                      <Button variant="outline" size="sm" onClick={handleBumpBot}>
-                        <ArrowUpCircle className="h-4 w-4 mr-2" />
-                        {t('bots.bump')}
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                <CardDescription className="text-base">{bot.short_description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Bot image */}
-                {bot.image_url && (
-                  <div className="mb-6 overflow-hidden rounded-lg border">
-                    <AspectRatio ratio={16 / 9}>
-                      <img 
-                        src={bot.image_url} 
-                        alt={bot.name} 
-                        className="w-full h-full object-cover" 
-                      />
-                    </AspectRatio>
-                  </div>
-                )}
-                
-                {/* Description */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">{t('bots.description')}</h3>
-                  <div className="prose dark:prose-invert max-w-none">
-                    {bot.description || t('bots.no-description')}
-                  </div>
-                </div>
-                
-                {/* Meta info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Prefix */}
-                  {bot.prefix && (
-                    <div className="border rounded-md p-3">
-                      <div className="text-sm text-muted-foreground">{t('bots.prefix')}</div>
-                      <div className="font-mono mt-1">{bot.prefix}</div>
-                    </div>
-                  )}
-                  
-                  {/* Added date */}
-                  <div className="border rounded-md p-3">
-                    <div className="text-sm text-muted-foreground">{t('bots.added')}</div>
-                    <div className="flex items-center mt-1">
-                      <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                      {formatDate(bot.created_at)}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Tags */}
-                {bot.tags && bot.tags.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">{t('bots.tags')}</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {bot.tags.map((tag: string, index: number) => (
-                        <Badge key={index} variant="secondary">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <div className="flex items-center">
-                  <Star className="h-5 w-5 text-yellow-500 mr-1" />
-                  <span className="font-semibold">
-                    {bot.stars || 0} {bot.stars === 1 ? t('bots.star') : t('bots.stars')}
-                  </span>
-                </div>
-                
-                <div className="flex gap-2">
-                  {bot.website_url && (
-                    <Button variant="outline" size="sm" asChild>
-                      <a href={bot.website_url} target="_blank" rel="noopener noreferrer">
-                        <Globe className="h-4 w-4 mr-2" />
-                        {t('bots.website')}
-                      </a>
-                    </Button>
-                  )}
-                  
-                  {bot.github_url && (
-                    <Button variant="outline" size="sm" asChild>
-                      <a href={bot.github_url} target="_blank" rel="noopener noreferrer">
-                        <Github className="h-4 w-4 mr-2" />
-                        {t('bots.github')}
-                      </a>
-                    </Button>
-                  )}
-                  
-                  {bot.invite_url && (
-                    <Button variant="default" size="sm" asChild>
-                      <a href={bot.invite_url} target="_blank" rel="noopener noreferrer">
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        {t('bots.invite')}
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              </CardFooter>
-            </Card>
-            
-            {/* Owner info card */}
-            <Card className="md:w-72">
-              <CardHeader>
-                <CardTitle>{t('bots.owner')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col items-center">
-                  <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-3">
-                    {owner?.avatar_url ? (
-                      <img 
-                        src={owner.avatar_url} 
-                        alt={owner?.username || 'User'} 
-                        className="h-full w-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-2xl font-semibold">
-                        {(owner?.username || 'U')[0].toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <div className="font-semibold">{owner?.username || t('misc.unknown-user')}</div>
-                  {owner?.created_at && (
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {t('profile.member-since')}: {formatDate(owner.created_at)}
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" className="w-full" onClick={() => navigate(`/user/${bot.user_id}`)}>
-                  {t('bots.view-profile')}
+    <div className="container py-8">
+      <Button variant="ghost" className="mb-6" asChild>
+        <Link to="/bots">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          {t('misc.back-to-bots')}
+        </Link>
+      </Button>
+      
+      <Card className="max-w-4xl mx-auto">
+        <CardHeader className="flex flex-row items-start gap-6">
+          <Avatar className="h-24 w-24 border-2 border-primary">
+            <AvatarImage src={bot.image_url || ''} alt={bot.name} />
+            <AvatarFallback className="text-2xl">{bot.name.substring(0, 2)}</AvatarFallback>
+          </Avatar>
+          
+          <div className="space-y-2 flex-1">
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="text-3xl">{bot.name}</CardTitle>
+                <CardDescription className="text-lg">{bot.short_description}</CardDescription>
+              </div>
+              
+              {isOwner(bot.user_id) && (
+                <Button variant="outline" asChild>
+                  <Link to={`/bot/${bot.id}/edit`}>{t('bot.edit')}</Link>
                 </Button>
-              </CardFooter>
-            </Card>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center">
+                <Star className="h-4 w-4 mr-1 text-yellow-500" />
+                {bot.stars || 0} {t('bot.stars')}
+              </div>
+              
+              <div>
+                {t('bot.prefix')}: <span className="font-mono bg-muted px-1 rounded">{bot.prefix || '/'}</span>
+              </div>
+              
+              {bot.verified && (
+                <Badge variant="outline" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                  {t('bot.verified')}
+                </Badge>
+              )}
+            </div>
+            
+            {bot.tags && bot.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {bot.tags.map(tag => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      </motion.div>
+        </CardHeader>
+        
+        <CardContent className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium mb-2">{t('bot.description')}</h3>
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              {bot.description || bot.short_description || t('bot.no-description')}
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {bot.invite_url && (
+              <Button className="w-full" asChild>
+                <a href={bot.invite_url} target="_blank" rel="noopener noreferrer">
+                  {t('bot.invite')}
+                </a>
+              </Button>
+            )}
+            
+            {bot.support_url && (
+              <Button variant="outline" className="w-full" asChild>
+                <a href={bot.support_url} target="_blank" rel="noopener noreferrer">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  {t('bot.support')}
+                </a>
+              </Button>
+            )}
+            
+            {bot.website_url && (
+              <Button variant="outline" className="w-full" asChild>
+                <a href={bot.website_url} target="_blank" rel="noopener noreferrer">
+                  <Globe className="mr-2 h-4 w-4" />
+                  {t('bot.website')}
+                </a>
+              </Button>
+            )}
+            
+            {bot.github_url && (
+              <Button variant="outline" className="w-full" asChild>
+                <a href={bot.github_url} target="_blank" rel="noopener noreferrer">
+                  <Github className="mr-2 h-4 w-4" />
+                  {t('bot.github')}
+                </a>
+              </Button>
+            )}
+          </div>
+        </CardContent>
+        
+        <CardFooter className="border-t pt-6 flex flex-col items-start gap-2">
+          <div className="text-sm text-muted-foreground">
+            {t('bot.owner')}: <span className="font-medium">{bot.profiles?.username || t('bot.unknown')}</span>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {t('bot.created')}: {formatDate(bot.created_at)}
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {t('bot.updated')}: {formatDate(bot.updated_at)}
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

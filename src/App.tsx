@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { CookieProvider } from "./contexts/CookieContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import { Layout } from "./components/layout/Layout";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -30,33 +32,35 @@ const App = () => (
     <BrowserRouter>
       <LanguageProvider>
         <CookieProvider>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/auth/callback" element={<AuthCallback />} />
-                  <Route path="/bots" element={<Bots />} />
-                  <Route path="/bot/:id" element={<BotDetail />} />
-                  <Route path="/add-bot" element={<AddBot />} />
-                  <Route path="/servers" element={<Servers />} />
-                  <Route path="/add-server" element={<AddServer />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/account" element={<AccountManager />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/imprint" element={<Imprint />} />
-                  <Route path="/login" element={<Navigate to="/auth" />} />
-                  <Route path="/register" element={<Navigate to="/auth" />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Layout>
-            </TooltipProvider>
-          </AuthProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="/bots" element={<Bots />} />
+                    <Route path="/bot/:id" element={<BotDetail />} />
+                    <Route path="/add-bot" element={<AddBot />} />
+                    <Route path="/servers" element={<Servers />} />
+                    <Route path="/add-server" element={<AddServer />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/account" element={<AccountManager />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/imprint" element={<Imprint />} />
+                    <Route path="/login" element={<Navigate to="/auth" />} />
+                    <Route path="/register" element={<Navigate to="/auth" />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Layout>
+              </TooltipProvider>
+            </AuthProvider>
+          </ThemeProvider>
         </CookieProvider>
       </LanguageProvider>
     </BrowserRouter>

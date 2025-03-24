@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,7 +12,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Shield, Users, Bot, RefreshCw, Check, X, Server, Trash2, PenLine, Eye, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Link } from 'react-router-dom';
 
 const Admin = () => {
   const { t } = useLanguage();
@@ -36,8 +36,8 @@ const Admin = () => {
         navigate('/auth');
       } else if (!isAdmin) {
         toast({
-          title: "Zugriff verweigert",
-          description: "Sie haben keine Administratorrechte.",
+          title: t('admin.access-denied'),
+          description: t('admin.no-admin-rights'),
           variant: "destructive",
         });
         navigate('/');
@@ -47,7 +47,7 @@ const Admin = () => {
         fetchServers();
       }
     }
-  }, [user, isAdmin, loading, navigate]);
+  }, [user, isAdmin, loading, navigate, t, toast]);
 
   const fetchUsers = async () => {
     setLoadingUsers(true);
@@ -65,8 +65,8 @@ const Admin = () => {
     } catch (error: any) {
       console.error('Error fetching users:', error);
       toast({
-        title: "Fehler beim Abrufen der Benutzer",
-        description: error.message || "Beim Abrufen der Benutzer ist ein Fehler aufgetreten.",
+        title: t('admin.error-fetching-users'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     } finally {
@@ -96,8 +96,8 @@ const Admin = () => {
     } catch (error: any) {
       console.error('Error fetching bots:', error);
       toast({
-        title: "Fehler beim Abrufen der Bots",
-        description: error.message || "Beim Abrufen der Bots ist ein Fehler aufgetreten.",
+        title: t('admin.error-fetching-bots'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     } finally {
@@ -108,6 +108,7 @@ const Admin = () => {
   const fetchServers = async () => {
     setLoadingServers(true);
     try {
+      // Correctly query the servers table with its proper schema
       const { data, error } = await supabase
         .from('servers')
         .select('*, profiles:user_id(username)')
@@ -121,8 +122,8 @@ const Admin = () => {
     } catch (error: any) {
       console.error('Error fetching servers:', error);
       toast({
-        title: "Fehler beim Abrufen der Server",
-        description: error.message || "Beim Abrufen der Server ist ein Fehler aufgetreten.",
+        title: t('admin.error-fetching-servers'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     } finally {
@@ -142,8 +143,10 @@ const Admin = () => {
       }
       
       toast({
-        title: "Administratorstatus aktualisiert",
-        description: `Benutzer ist jetzt ${!currentStatus ? 'ein Administrator' : 'kein Administrator mehr'}.`,
+        title: t('admin.admin-status-updated'),
+        description: !currentStatus 
+          ? t('admin.user-is-now-admin') 
+          : t('admin.user-no-longer-admin'),
       });
       
       // Refresh the users list
@@ -151,8 +154,8 @@ const Admin = () => {
     } catch (error: any) {
       console.error('Error updating admin status:', error);
       toast({
-        title: "Fehler beim Aktualisieren des Administratorstatus",
-        description: error.message || "Beim Aktualisieren des Administratorstatus ist ein Fehler aufgetreten.",
+        title: t('admin.error-updating-admin-status'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     }
@@ -170,8 +173,8 @@ const Admin = () => {
       }
       
       toast({
-        title: "Bot verifiziert",
-        description: "Der Bot wurde erfolgreich verifiziert.",
+        title: t('admin.bot-verified'),
+        description: t('admin.bot-verified-success'),
       });
       
       // Refresh the bots list
@@ -179,15 +182,15 @@ const Admin = () => {
     } catch (error: any) {
       console.error('Error verifying bot:', error);
       toast({
-        title: "Fehler beim Verifizieren des Bots",
-        description: error.message || "Beim Verifizieren des Bots ist ein Fehler aufgetreten.",
+        title: t('admin.error-verifying-bot'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     }
   };
 
   const deleteBot = async (botId: string) => {
-    if (!confirm("Sind Sie sicher, dass Sie diesen Bot löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.")) {
+    if (!confirm(t('admin.confirm-delete-bot'))) {
       return;
     }
     
@@ -202,8 +205,8 @@ const Admin = () => {
       }
       
       toast({
-        title: "Bot gelöscht",
-        description: "Der Bot wurde erfolgreich gelöscht.",
+        title: t('admin.bot-deleted'),
+        description: t('admin.bot-deleted-success'),
       });
       
       // Refresh the bots list
@@ -211,15 +214,15 @@ const Admin = () => {
     } catch (error: any) {
       console.error('Error deleting bot:', error);
       toast({
-        title: "Fehler beim Löschen des Bots",
-        description: error.message || "Beim Löschen des Bots ist ein Fehler aufgetreten.",
+        title: t('admin.error-deleting-bot'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     }
   };
 
   const deleteServer = async (serverId: string) => {
-    if (!confirm("Sind Sie sicher, dass Sie diesen Server löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.")) {
+    if (!confirm(t('admin.confirm-delete-server'))) {
       return;
     }
     
@@ -234,8 +237,8 @@ const Admin = () => {
       }
       
       toast({
-        title: "Server gelöscht",
-        description: "Der Server wurde erfolgreich gelöscht.",
+        title: t('admin.server-deleted'),
+        description: t('admin.server-deleted-success'),
       });
       
       // Refresh the servers list
@@ -243,8 +246,8 @@ const Admin = () => {
     } catch (error: any) {
       console.error('Error deleting server:', error);
       toast({
-        title: "Fehler beim Löschen des Servers",
-        description: error.message || "Beim Löschen des Servers ist ein Fehler aufgetreten.",
+        title: t('admin.error-deleting-server'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     }
@@ -258,7 +261,7 @@ const Admin = () => {
   if (loading) {
     return (
       <div className="container py-12 flex justify-center">
-        <div>Wird geladen...</div>
+        <div>{t('misc.loading')}</div>
       </div>
     );
   }
@@ -274,39 +277,39 @@ const Admin = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Shield className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold">Admin-Panel</h1>
+            <h1 className="text-3xl font-bold">{t('admin.title')}</h1>
           </div>
           <div className="flex gap-3">
-            <Link to="/add-server">
-              <Button variant="outline">
+            <Button variant="outline" asChild>
+              <Link to="/add-server">
                 <Plus className="h-4 w-4 mr-2" />
-                Server hinzufügen
-              </Button>
-            </Link>
-            <Link to="/add-bot">
-              <Button variant="outline">
+                {t('server.add')}
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/add-bot">
                 <Plus className="h-4 w-4 mr-2" />
-                Bot hinzufügen
-              </Button>
-            </Link>
+                {t('bot.add')}
+              </Link>
+            </Button>
           </div>
         </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6">
-            <TabsTrigger value="overview">Übersicht</TabsTrigger>
-            <TabsTrigger value="users">Benutzer</TabsTrigger>
-            <TabsTrigger value="bots">Bots</TabsTrigger>
-            <TabsTrigger value="pending">Ausstehende Bots</TabsTrigger>
-            <TabsTrigger value="servers">Discord-Server</TabsTrigger>
+            <TabsTrigger value="overview">{t('admin.overview')}</TabsTrigger>
+            <TabsTrigger value="users">{t('admin.users')}</TabsTrigger>
+            <TabsTrigger value="bots">{t('admin.bots')}</TabsTrigger>
+            <TabsTrigger value="pending">{t('admin.pending')}</TabsTrigger>
+            <TabsTrigger value="servers">{t('admin.servers')}</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/50 dark:to-blue-950/50">
                 <CardHeader className="pb-2">
-                  <CardTitle>Benutzer insgesamt</CardTitle>
-                  <CardDescription>Registrierte Benutzer</CardDescription>
+                  <CardTitle>{t('admin.total-users')}</CardTitle>
+                  <CardDescription>{t('admin.registered-users')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{users.length}</div>
@@ -315,8 +318,8 @@ const Admin = () => {
               
               <Card className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/50 dark:to-purple-950/50">
                 <CardHeader className="pb-2">
-                  <CardTitle>Bots insgesamt</CardTitle>
-                  <CardDescription>Verifizierte Bots</CardDescription>
+                  <CardTitle>{t('admin.total-bots')}</CardTitle>
+                  <CardDescription>{t('admin.verified-bots')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-violet-600 dark:text-violet-400">{bots.length}</div>
@@ -325,8 +328,8 @@ const Admin = () => {
               
               <Card className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/50 dark:to-yellow-950/50">
                 <CardHeader className="pb-2">
-                  <CardTitle>Ausstehende Verifizierung</CardTitle>
-                  <CardDescription>Prüfung erforderlich</CardDescription>
+                  <CardTitle>{t('admin.pending-verification')}</CardTitle>
+                  <CardDescription>{t('admin.verification-required')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">{pendingBots.length}</div>
@@ -335,8 +338,8 @@ const Admin = () => {
 
               <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/50 dark:to-green-950/50">
                 <CardHeader className="pb-2">
-                  <CardTitle>Server insgesamt</CardTitle>
-                  <CardDescription>Discord-Server</CardDescription>
+                  <CardTitle>{t('admin.total-servers')}</CardTitle>
+                  <CardDescription>{t('admin.servers')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{servers.length}</div>
@@ -352,9 +355,9 @@ const Admin = () => {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Users className="h-5 w-5" />
-                      Benutzerverwaltung
+                      {t('admin.user-management')}
                     </CardTitle>
-                    <CardDescription>Benutzer verwalten und Berechtigungen zuweisen</CardDescription>
+                    <CardDescription>{t('admin.manage-users-permissions')}</CardDescription>
                   </div>
                   <Button 
                     variant="outline" 
@@ -363,7 +366,7 @@ const Admin = () => {
                     disabled={loadingUsers}
                   >
                     <RefreshCw className={`h-4 w-4 mr-2 ${loadingUsers ? 'animate-spin' : ''}`} />
-                    Aktualisieren
+                    {t('admin.refresh')}
                   </Button>
                 </div>
               </CardHeader>
@@ -371,10 +374,10 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Benutzername</TableHead>
-                      <TableHead>E-Mail</TableHead>
-                      <TableHead>Beigetreten</TableHead>
-                      <TableHead className="text-right">Aktionen</TableHead>
+                      <TableHead>{t('auth.username')}</TableHead>
+                      <TableHead>ID</TableHead>
+                      <TableHead>{t('admin.joined')}</TableHead>
+                      <TableHead className="text-right">{t('admin.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -398,7 +401,7 @@ const Admin = () => {
                             size="sm"
                             onClick={() => toggleAdminStatus(user.id, user.is_admin)}
                           >
-                            {user.is_admin ? "Admin-Rechte entfernen" : "Zum Admin machen"}
+                            {user.is_admin ? t('admin.remove-admin') : t('admin.make-admin')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -406,7 +409,7 @@ const Admin = () => {
                     {users.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
-                          {loadingUsers ? "Wird geladen..." : "Keine Benutzer gefunden"}
+                          {loadingUsers ? t('misc.loading') : t('admin.no-users-found')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -423,9 +426,9 @@ const Admin = () => {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Bot className="h-5 w-5" />
-                      Verifizierte Bots
+                      {t('admin.verified-bots')}
                     </CardTitle>
-                    <CardDescription>Bot-Verwaltung</CardDescription>
+                    <CardDescription>{t('admin.bot-management')}</CardDescription>
                   </div>
                   <Button 
                     variant="outline" 
@@ -434,7 +437,7 @@ const Admin = () => {
                     disabled={loadingBots}
                   >
                     <RefreshCw className={`h-4 w-4 mr-2 ${loadingBots ? 'animate-spin' : ''}`} />
-                    Aktualisieren
+                    {t('admin.refresh')}
                   </Button>
                 </div>
               </CardHeader>
@@ -442,17 +445,17 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Bot-Name</TableHead>
-                      <TableHead>Besitzer</TableHead>
-                      <TableHead>Hinzugefügt</TableHead>
-                      <TableHead className="text-right">Aktionen</TableHead>
+                      <TableHead>{t('bot.name')}</TableHead>
+                      <TableHead>{t('bot.owner')}</TableHead>
+                      <TableHead>{t('admin.added')}</TableHead>
+                      <TableHead className="text-right">{t('admin.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {bots.map((bot) => (
                       <TableRow key={bot.id}>
                         <TableCell className="font-medium">{bot.name}</TableCell>
-                        <TableCell className="text-muted-foreground">{bot.profiles?.username || 'Unbekannt'}</TableCell>
+                        <TableCell className="text-muted-foreground">{bot.profiles?.username || t('bot.unknown')}</TableCell>
                         <TableCell className="text-muted-foreground">
                           {new Date(bot.created_at).toLocaleDateString()}
                         </TableCell>
@@ -463,7 +466,7 @@ const Admin = () => {
                             onClick={() => deleteBot(bot.id)}
                           >
                             <Trash2 className="h-4 w-4 mr-1" />
-                            Löschen
+                            {t('misc.delete')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -471,7 +474,7 @@ const Admin = () => {
                     {bots.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
-                          {loadingBots ? "Wird geladen..." : "Keine Bots gefunden"}
+                          {loadingBots ? t('misc.loading') : t('admin.no-bots-found')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -488,9 +491,9 @@ const Admin = () => {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Bot className="h-5 w-5" />
-                      Ausstehende Verifizierung
+                      {t('admin.pending-verification')}
                     </CardTitle>
-                    <CardDescription>Bot-Überprüfung</CardDescription>
+                    <CardDescription>{t('admin.bot-review')}</CardDescription>
                   </div>
                   <Button 
                     variant="outline" 
@@ -499,7 +502,7 @@ const Admin = () => {
                     disabled={loadingBots}
                   >
                     <RefreshCw className={`h-4 w-4 mr-2 ${loadingBots ? 'animate-spin' : ''}`} />
-                    Aktualisieren
+                    {t('admin.refresh')}
                   </Button>
                 </div>
               </CardHeader>
@@ -507,19 +510,19 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Bot-Name</TableHead>
-                      <TableHead>Besitzer</TableHead>
-                      <TableHead>Beschreibung</TableHead>
-                      <TableHead>Hinzugefügt</TableHead>
-                      <TableHead className="text-right">Aktionen</TableHead>
+                      <TableHead>{t('bot.name')}</TableHead>
+                      <TableHead>{t('bot.owner')}</TableHead>
+                      <TableHead>{t('bot.description')}</TableHead>
+                      <TableHead>{t('admin.added')}</TableHead>
+                      <TableHead className="text-right">{t('admin.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {pendingBots.map((bot) => (
                       <TableRow key={bot.id}>
                         <TableCell className="font-medium">{bot.name}</TableCell>
-                        <TableCell className="text-muted-foreground">{bot.profiles?.username || 'Unbekannt'}</TableCell>
-                        <TableCell className="text-muted-foreground truncate">{bot.short_description || 'Keine Beschreibung'}</TableCell>
+                        <TableCell className="text-muted-foreground">{bot.profiles?.username || t('bot.unknown')}</TableCell>
+                        <TableCell className="text-muted-foreground truncate">{bot.short_description || t('bot.no-description')}</TableCell>
                         <TableCell className="text-muted-foreground">
                           {new Date(bot.created_at).toLocaleDateString()}
                         </TableCell>
@@ -527,20 +530,20 @@ const Admin = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="bg-green-50 hover:bg-green-100 text-green-600 hover:text-green-700"
+                            className="bg-green-50 hover:bg-green-100 text-green-600 hover:text-green-700 dark:bg-green-900/30 dark:hover:bg-green-900/50 dark:text-green-400 dark:hover:text-green-300"
                             onClick={() => verifyBot(bot.id)}
                           >
                             <Check className="h-4 w-4 mr-1" />
-                            Genehmigen
+                            {t('admin.approve')}
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
-                            className="bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700"
+                            className="bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 dark:hover:text-red-300"
                             onClick={() => deleteBot(bot.id)}
                           >
                             <X className="h-4 w-4 mr-1" />
-                            Ablehnen
+                            {t('admin.decline')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -548,7 +551,7 @@ const Admin = () => {
                     {pendingBots.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
-                          {loadingBots ? "Wird geladen..." : "Keine ausstehenden Bots"}
+                          {loadingBots ? t('misc.loading') : t('admin.no-pending-bots')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -565,17 +568,17 @@ const Admin = () => {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Server className="h-5 w-5" />
-                      Discord-Server
+                      {t('admin.servers')}
                     </CardTitle>
-                    <CardDescription>Server-Verwaltung</CardDescription>
+                    <CardDescription>{t('admin.server-management')}</CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <Link to="/add-server">
-                      <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/add-server">
                         <Plus className="h-4 w-4 mr-2" />
-                        Server hinzufügen
-                      </Button>
-                    </Link>
+                        {t('server.add')}
+                      </Link>
+                    </Button>
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -583,7 +586,7 @@ const Admin = () => {
                       disabled={loadingServers}
                     >
                       <RefreshCw className={`h-4 w-4 mr-2 ${loadingServers ? 'animate-spin' : ''}`} />
-                      Aktualisieren
+                      {t('admin.refresh')}
                     </Button>
                   </div>
                 </div>
@@ -592,18 +595,18 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Server-Name</TableHead>
-                      <TableHead>Besitzer</TableHead>
-                      <TableHead>Mitglieder</TableHead>
-                      <TableHead>Hinzugefügt</TableHead>
-                      <TableHead className="text-right">Aktionen</TableHead>
+                      <TableHead>{t('server.name')}</TableHead>
+                      <TableHead>{t('server.owner')}</TableHead>
+                      <TableHead>{t('server.members')}</TableHead>
+                      <TableHead>{t('admin.added')}</TableHead>
+                      <TableHead className="text-right">{t('admin.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {servers.map((server) => (
                       <TableRow key={server.id}>
                         <TableCell className="font-medium">{server.name}</TableCell>
-                        <TableCell className="text-muted-foreground">{server.profiles?.username || 'Unbekannt'}</TableCell>
+                        <TableCell className="text-muted-foreground">{server.profiles?.username || t('bot.unknown')}</TableCell>
                         <TableCell>{server.member_count?.toLocaleString() || '0'}</TableCell>
                         <TableCell className="text-muted-foreground">
                           {new Date(server.created_at).toLocaleDateString()}
@@ -615,7 +618,7 @@ const Admin = () => {
                             onClick={() => deleteServer(server.id)}
                           >
                             <Trash2 className="h-4 w-4 mr-1" />
-                            Löschen
+                            {t('misc.delete')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -623,7 +626,7 @@ const Admin = () => {
                     {servers.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
-                          {loadingServers ? "Wird geladen..." : "Keine Server gefunden"}
+                          {loadingServers ? t('misc.loading') : t('admin.no-servers-found')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -639,35 +642,35 @@ const Admin = () => {
       <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Benutzerdetails</DialogTitle>
-            <DialogDescription>Detaillierte Informationen über den Benutzer</DialogDescription>
+            <DialogTitle>{t('admin.user-details')}</DialogTitle>
+            <DialogDescription>{t('admin.user-detailed-info')}</DialogDescription>
           </DialogHeader>
           {selectedUser && (
             <div className="space-y-4">
               <div className="grid grid-cols-[1fr_2fr] gap-2">
-                <div className="font-medium">Benutzername:</div>
-                <div>{selectedUser.username || 'Kein Benutzername'}</div>
+                <div className="font-medium">{t('auth.username')}:</div>
+                <div>{selectedUser.username || t('bot.unknown')}</div>
               </div>
               <div className="grid grid-cols-[1fr_2fr] gap-2">
                 <div className="font-medium">ID:</div>
                 <div className="break-all">{selectedUser.id}</div>
               </div>
               <div className="grid grid-cols-[1fr_2fr] gap-2">
-                <div className="font-medium">Registriert:</div>
+                <div className="font-medium">{t('admin.registered')}:</div>
                 <div>{new Date(selectedUser.created_at).toLocaleString()}</div>
               </div>
               <div className="grid grid-cols-[1fr_2fr] gap-2">
-                <div className="font-medium">Zuletzt aktualisiert:</div>
+                <div className="font-medium">{t('admin.last-updated')}:</div>
                 <div>{new Date(selectedUser.updated_at).toLocaleString()}</div>
               </div>
               <div className="grid grid-cols-[1fr_2fr] gap-2">
-                <div className="font-medium">Admin-Status:</div>
-                <div>{selectedUser.is_admin ? 'Administrator' : 'Normaler Benutzer'}</div>
+                <div className="font-medium">{t('admin.admin-status')}:</div>
+                <div>{selectedUser.is_admin ? t('admin.administrator') : t('admin.regular-user')}</div>
               </div>
             </div>
           )}
           <DialogFooter>
-            <Button onClick={() => setUserDialogOpen(false)}>Schließen</Button>
+            <Button onClick={() => setUserDialogOpen(false)}>{t('admin.close')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -676,4 +679,3 @@ const Admin = () => {
 };
 
 export default Admin;
-

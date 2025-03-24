@@ -4,6 +4,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type AuthContextType = {
   session: Session | null;
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -97,15 +99,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       toast({
-        title: "Willkommen zurück!",
-        description: "Sie haben sich erfolgreich angemeldet.",
+        title: t('misc.success'),
+        description: t('auth.login-success'),
       });
       navigate('/');
     } catch (error: any) {
       console.error('Sign in error:', error);
       toast({
-        title: "Anmeldung fehlgeschlagen",
-        description: error.message || "Bei der Anmeldung ist ein Fehler aufgetreten.",
+        title: t('auth.login-failed'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     } finally {
@@ -131,15 +133,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       toast({
-        title: "Konto erstellt!",
-        description: "Bitte überprüfen Sie Ihre E-Mail, um Ihr Konto zu bestätigen.",
+        title: t('auth.account-created'),
+        description: t('auth.check-email'),
       });
       navigate('/');
     } catch (error: any) {
       console.error('Sign up error:', error);
       toast({
-        title: "Registrierung fehlgeschlagen",
-        description: error.message || "Bei der Registrierung ist ein Fehler aufgetreten.",
+        title: t('auth.register-failed'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     } finally {
@@ -163,8 +165,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: any) {
       console.error('Discord sign in error:', error);
       toast({
-        title: "Discord-Anmeldung fehlgeschlagen",
-        description: error.message || "Bei der Anmeldung mit Discord ist ein Fehler aufgetreten.",
+        title: t('auth.discord-login-failed'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
       setLoading(false);
@@ -187,8 +189,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: any) {
       console.error('Google sign in error:', error);
       toast({
-        title: "Google-Anmeldung fehlgeschlagen",
-        description: error.message || "Bei der Anmeldung mit Google ist ein Fehler aufgetreten.",
+        title: t('auth.google-login-failed'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
       setLoading(false);
@@ -200,14 +202,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       await supabase.auth.signOut();
       toast({
-        title: "Abgemeldet",
-        description: "Sie wurden erfolgreich abgemeldet.",
+        title: t('auth.logged-out'),
+        description: t('auth.logout-success'),
       });
       navigate('/');
     } catch (error: any) {
       toast({
-        title: "Fehler beim Abmelden",
-        description: error.message || "Beim Abmelden ist ein Fehler aufgetreten.",
+        title: t('auth.logout-failed'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     } finally {
@@ -219,8 +221,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       if (!user) {
         toast({
-          title: "Authentifizierung erforderlich",
-          description: "Sie müssen angemeldet sein, um einen Bot zu bumpen.",
+          title: t('auth.auth-required'),
+          description: t('bot.bump-auth-required'),
           variant: "destructive",
         });
         return;
@@ -237,14 +239,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       toast({
-        title: "Bot erfolgreich gebumpt!",
-        description: "Ihr Bot wurde an die Spitze der Liste gebumpt.",
+        title: t('bot.bumped'),
+        description: t('bot.bump-success'),
       });
     } catch (error: any) {
       console.error('Error bumping bot:', error);
       toast({
-        title: "Fehler beim Bumpen des Bots",
-        description: error.message || "Beim Bumpen Ihres Bots ist ein Fehler aufgetreten.",
+        title: t('bot.bump-failed'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     }
@@ -254,8 +256,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       if (!user) {
         toast({
-          title: "Authentifizierung erforderlich",
-          description: "Sie müssen angemeldet sein, um Ihr Profil zu aktualisieren.",
+          title: t('auth.auth-required'),
+          description: t('profile.update-auth-required'),
           variant: "destructive",
         });
         return;
@@ -271,14 +273,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       toast({
-        title: "Profil aktualisiert",
-        description: "Ihr Profil wurde erfolgreich aktualisiert.",
+        title: t('profile.updated'),
+        description: t('profile.update-success'),
       });
     } catch (error: any) {
       console.error('Error updating profile:', error);
       toast({
-        title: "Fehler beim Aktualisieren des Profils",
-        description: error.message || "Beim Aktualisieren Ihres Profils ist ein Fehler aufgetreten.",
+        title: t('profile.update-failed'),
+        description: error.message || t('misc.error'),
         variant: "destructive",
       });
     }
