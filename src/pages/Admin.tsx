@@ -80,7 +80,7 @@ const Admin = () => {
       // Fetch all bots
       const { data: allBots, error: botsError } = await supabase
         .from('bots')
-        .select('*, profiles:user_id(username)')
+        .select('*, profiles:user_id(*)')
         .order('created_at', { ascending: false });
       
       if (botsError) {
@@ -108,10 +108,10 @@ const Admin = () => {
   const fetchServers = async () => {
     setLoadingServers(true);
     try {
-      // Correctly query the servers table with its proper schema
+      // Use correct join syntax for the user profile information
       const { data, error } = await supabase
         .from('servers')
-        .select('*, profiles:user_id(username)')
+        .select('*, profiles:user_id(*)')
         .order('created_at', { ascending: false });
       
       if (error) {

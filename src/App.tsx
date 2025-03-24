@@ -44,6 +44,7 @@ const App = () => (
                     <Route path="/auth/callback" element={<AuthCallback />} />
                     <Route path="/bots" element={<Bots />} />
                     <Route path="/bot/:id" element={<BotDetail />} />
+                    <Route path="/bots/:id" element={<Navigate to="/bot/:id" replace />} />
                     <Route path="/add-bot" element={<AddBot />} />
                     <Route path="/servers" element={<Servers />} />
                     <Route path="/add-server" element={<AddServer />} />

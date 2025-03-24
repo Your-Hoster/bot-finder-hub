@@ -49,8 +49,8 @@ const Bots = () => {
       } catch (error: any) {
         console.error('Error fetching bots:', error);
         toast({
-          title: "Error fetching bots",
-          description: error.message || "An error occurred while loading bots.",
+          title: t('admin.error-fetching-bots'),
+          description: error.message || t('misc.error'),
           variant: "destructive",
         });
       } finally {
@@ -59,7 +59,7 @@ const Bots = () => {
     };
     
     fetchBots();
-  }, [toast]);
+  }, [toast, t]);
   
   const handleBumpBot = async (botId: string) => {
     setBumpingBot(botId);
@@ -97,15 +97,15 @@ const Bots = () => {
     <div className="container py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Discord Bots Directory</h1>
+          <h1 className="text-3xl font-bold">{t('bot.directory')}</h1>
           <p className="text-muted-foreground mt-2">
-            Browse and discover Discord bots for your server
+            {t('bot.directory-desc')}
           </p>
         </div>
         <Button asChild>
           <Link to="/add-bot">
             <PlusIcon className="mr-2 h-4 w-4" />
-            Add Bot
+            {t('bot.add')}
           </Link>
         </Button>
       </div>
@@ -130,10 +130,10 @@ const Bots = () => {
         </div>
       ) : bots.length === 0 ? (
         <div className="text-center py-12">
-          <h2 className="text-xl font-medium">No bots found</h2>
-          <p className="text-muted-foreground mt-2">Be the first to add a bot to our directory!</p>
+          <h2 className="text-xl font-medium">{t('bot.none-found')}</h2>
+          <p className="text-muted-foreground mt-2">{t('bot.be-first')}</p>
           <Button className="mt-4" asChild>
-            <Link to="/add-bot">Add Your Bot</Link>
+            <Link to="/add-bot">{t('bot.add-yours')}</Link>
           </Button>
         </div>
       ) : (
@@ -151,10 +151,10 @@ const Bots = () => {
                       <CardTitle className="text-lg">{bot.name}</CardTitle>
                       <CardDescription className="flex items-center">
                         <StarIcon className="h-3 w-3 mr-1 text-yellow-500" />
-                        {bot.stars || 0} stars
+                        {bot.stars || 0} {t('bot.stars')}
                         {bot.verified && (
-                          <Badge variant="outline" className="ml-2 bg-blue-100 text-blue-800">
-                            Verified
+                          <Badge variant="outline" className="ml-2 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                            {t('bot.verified')}
                           </Badge>
                         )}
                       </CardDescription>
@@ -164,7 +164,7 @@ const Bots = () => {
               </CardHeader>
               <CardContent className="flex-grow">
                 <p className="text-sm text-muted-foreground">
-                  {bot.short_description || 'No description provided'}
+                  {bot.short_description || t('bot.no-description')}
                 </p>
                 {bot.tags && bot.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
@@ -176,12 +176,12 @@ const Bots = () => {
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground mt-4">
-                  Last updated: {formatDate(bot.updated_at)}
+                  {t('bot.last-updated')}: {formatDate(bot.updated_at)}
                 </p>
               </CardContent>
               <CardFooter className="border-t pt-4 flex justify-between">
                 <Button variant="outline" asChild>
-                  <Link to={`/bots/${bot.id}`}>View Details</Link>
+                  <Link to={`/bot/${bot.id}`}>{t('bot.view-details')}</Link>
                 </Button>
                 {isUserBot(bot.user_id) && (
                   <Button 
@@ -190,11 +190,11 @@ const Bots = () => {
                     disabled={bumpingBot === bot.id}
                   >
                     {bumpingBot === bot.id ? (
-                      "Bumping..."
+                      t('bot.bumping')
                     ) : (
                       <>
                         <RefreshCwIcon className="mr-1 h-4 w-4" />
-                        Bump
+                        {t('bot.bump')}
                       </>
                     )}
                   </Button>
