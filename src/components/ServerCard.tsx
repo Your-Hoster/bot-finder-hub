@@ -3,11 +3,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Users, ExternalLink, MessageCircle, Share2, Bot } from 'lucide-react';
+import { Users, ExternalLink, MessageCircle, Share2 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
-import { Link } from 'react-router-dom';
 
 type ServerCardProps = {
   server: {
@@ -18,13 +16,11 @@ type ServerCardProps = {
     member_count: number;
     invite_url: string | null;
     tags: string[] | null;
-    user_id: string | null;
   };
 };
 
 const ServerCard = ({ server }: ServerCardProps) => {
   const { toast } = useToast();
-  const { user } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
 
   const copyInviteLink = () => {
@@ -36,8 +32,6 @@ const ServerCard = ({ server }: ServerCardProps) => {
       });
     }
   };
-
-  const isOwner = user && server.user_id === user.id;
 
   return (
     <Card 
@@ -76,32 +70,21 @@ const ServerCard = ({ server }: ServerCardProps) => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="border-t pt-4 flex flex-col gap-2">
-        <div className="flex gap-2 w-full">
-          {server.invite_url ? (
-            <>
-              <Button className="flex-1" asChild>
-                <a href={server.invite_url} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Beitreten
-                </a>
-              </Button>
-              <Button variant="outline" size="icon" onClick={copyInviteLink}>
-                <Share2 className="h-4 w-4" />
-              </Button>
-            </>
-          ) : (
-            <Button className="w-full" disabled>Kein Einladungslink</Button>
-          )}
-        </div>
-        
-        {isOwner && (
-          <Button variant="outline" className="w-full" asChild>
-            <Link to={`/connect-bot/${server.id}`}>
-              <Bot className="h-4 w-4 mr-2" />
-              Discord Bot verbinden
-            </Link>
-          </Button>
+      <CardFooter className="border-t pt-4 flex gap-2">
+        {server.invite_url ? (
+          <>
+            <Button className="flex-1" asChild>
+              <a href={server.invite_url} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Beitreten
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" onClick={copyInviteLink}>
+              <Share2 className="h-4 w-4" />
+            </Button>
+          </>
+        ) : (
+          <Button className="w-full" disabled>Kein Einladungslink</Button>
         )}
       </CardFooter>
     </Card>
