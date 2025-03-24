@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -153,7 +152,7 @@ const BotDetail = () => {
         <CardHeader className="flex flex-row items-start gap-6">
           <Avatar className="h-24 w-24 border-2 border-primary">
             <AvatarImage src={bot?.image_url || ''} alt={bot?.name} />
-            <AvatarFallback className="text-2xl">{bot?.name.substring(0, 2)}</AvatarFallback>
+            <AvatarFallback className="text-2xl">{bot?.name?.substring(0, 2)}</AvatarFallback>
           </Avatar>
           
           <div className="space-y-2 flex-1">
