@@ -168,6 +168,16 @@ const translations = {
     'admin.no-admin-rights': 'You do not have admin rights to access this page',
     'admin.user-detailed-info': 'Detailed information about this user',
     
+    // Miscellaneous
+    'misc.error': 'Error',
+    'misc.back': 'Back',
+    'misc.loading': 'Loading...',
+    'misc.unknown': 'Unknown',
+    'misc.delete': 'Delete',
+    'misc.back-to-bots': 'Back to Bots',
+    'misc.view-details': 'View Details',
+    'misc.no-description': 'No description provided',
+    
     // Footer
     'footer.privacy': 'Privacy Policy',
     'footer.imprint': 'Imprint',
@@ -329,6 +339,16 @@ const translations = {
     'admin.no-admin-rights': 'Sie haben keine Administratorrechte, um auf diese Seite zuzugreifen',
     'admin.user-detailed-info': 'Detaillierte Informationen zu diesem Benutzer',
     
+    // Miscellaneous
+    'misc.error': 'Fehler',
+    'misc.back': 'Zurück',
+    'misc.loading': 'Wird geladen...',
+    'misc.unknown': 'Unbekannt',
+    'misc.delete': 'Löschen',
+    'misc.back-to-bots': 'Zurück zu Bots',
+    'misc.view-details': 'Details anzeigen',
+    'misc.no-description': 'Keine Beschreibung vorhanden',
+    
     // Footer
     'footer.privacy': 'Datenschutz',
     'footer.imprint': 'Impressum',
@@ -489,6 +509,16 @@ const translations = {
     'admin.access-denied': 'Acceso Denegado',
     'admin.no-admin-rights': 'No tiene derechos de administrador para acceder a esta página',
     'admin.user-detailed-info': 'Información detallada sobre este usuario',
+    
+    // Miscellaneous
+    'misc.error': 'Error',
+    'misc.back': 'Volver',
+    'misc.loading': 'Cargando...',
+    'misc.unknown': 'Desconocido',
+    'misc.delete': 'Eliminar',
+    'misc.back-to-bots': 'Volver a los Bots',
+    'misc.view-details': 'Ver Detalles',
+    'misc.no-description': 'Sin descripción',
     
     // Footer
     'footer.privacy': 'Política de Privacidad',

@@ -84,7 +84,7 @@ const Admin = () => {
       // Fetch all bots with correct join
       const { data: allBots, error: botsError } = await supabase
         .from('bots')
-        .select('*, profiles:user_id(username)')
+        .select('*, profiles(username)')
         .order('created_at', { ascending: false });
       
       if (botsError) {
@@ -119,7 +119,7 @@ const Admin = () => {
       // Use correct join syntax for the user profile information
       const { data, error } = await supabase
         .from('servers')
-        .select('*, profiles:user_id(username)')
+        .select('*, profiles(username)')
         .order('created_at', { ascending: false });
       
       if (error) {
