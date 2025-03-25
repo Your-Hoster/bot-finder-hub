@@ -53,7 +53,10 @@ const BotDetail = () => {
         
         const { data, error } = await supabase
           .from('bots')
-          .select('*, profiles:user_id(username)')
+          .select(`
+            *,
+            profiles:profiles(username)
+          `)
           .eq('id', id)
           .single();
         
