@@ -54,10 +54,10 @@ export const CookieBanner = () => {
               <Checkbox id="necessary" checked disabled />
               <div className="grid gap-1.5">
                 <Label htmlFor="necessary" className="font-medium">
-                  {t('cookie.necessary')}
+                  Necessary Cookies
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  {t('cookie.necessary_description')}
+                  These cookies are essential for the website to function properly.
                 </p>
               </div>
             </div>
@@ -72,10 +72,10 @@ export const CookieBanner = () => {
               />
               <div className="grid gap-1.5">
                 <Label htmlFor="analytics" className="font-medium">
-                  {t('cookie.analytics')}
+                  Analytics Cookies
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  {t('cookie.analytics_description')}
+                  These cookies help us understand how visitors interact with the website.
                 </p>
               </div>
             </div>
@@ -90,10 +90,10 @@ export const CookieBanner = () => {
               />
               <div className="grid gap-1.5">
                 <Label htmlFor="preferences" className="font-medium">
-                  {t('cookie.preferences')}
+                  Preferences Cookies
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  {t('cookie.preferences_description')}
+                  These cookies allow the website to remember choices you make.
                 </p>
               </div>
             </div>
@@ -108,10 +108,10 @@ export const CookieBanner = () => {
               />
               <div className="grid gap-1.5">
                 <Label htmlFor="marketing" className="font-medium">
-                  {t('cookie.marketing')}
+                  Marketing Cookies
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  {t('cookie.marketing_description')}
+                  These cookies are used to track visitors across websites.
                 </p>
               </div>
             </div>
@@ -119,10 +119,10 @@ export const CookieBanner = () => {
           
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setShowCookieSettings(false)}>
-              {t('cookie.cancel')}
+              Cancel
             </Button>
             <Button onClick={handleSavePreferences}>
-              {t('cookie.save')}
+              Save Preferences
             </Button>
           </div>
         </DialogContent>
@@ -147,7 +147,7 @@ export const CookieBanner = () => {
               </CardHeader>
               <CardContent className="pb-3">
                 <p className="text-sm text-muted-foreground">
-                  {t('cookie.customize_message')}
+                  You can customize your cookie preferences at any time.
                 </p>
               </CardContent>
               <CardFooter className="flex flex-col sm:flex-row gap-2 pt-0">

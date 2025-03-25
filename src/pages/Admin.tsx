@@ -29,7 +29,6 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [userDialogOpen, setUserDialogOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading) {
@@ -52,7 +51,6 @@ const Admin = () => {
 
   const fetchUsers = async () => {
     setLoadingUsers(true);
-    setError(null);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -66,7 +64,6 @@ const Admin = () => {
       setUsers(data || []);
     } catch (error: any) {
       console.error('Error fetching users:', error);
-      setError(error.message);
       toast({
         title: t('admin.error-fetching-users'),
         description: error.message || t('misc.error'),
@@ -79,19 +76,16 @@ const Admin = () => {
 
   const fetchBots = async () => {
     setLoadingBots(true);
-    setError(null);
     try {
-      // Use the foreign key relationship specified in the database schema
+      // Fetch all bots
       const { data: allBots, error: botsError } = await supabase
         .from('bots')
-        .select('*, profiles(username)')
+        .select('*, profiles:user_id(*)')
         .order('created_at', { ascending: false });
       
       if (botsError) {
         throw botsError;
       }
-      
-      console.log("Fetched bots:", allBots);
       
       // Separate verified and unverified bots
       const verified = allBots?.filter(bot => bot.verified) || [];
@@ -101,7 +95,6 @@ const Admin = () => {
       setPendingBots(pending);
     } catch (error: any) {
       console.error('Error fetching bots:', error);
-      setError(error.message);
       toast({
         title: t('admin.error-fetching-bots'),
         description: error.message || t('misc.error'),
@@ -114,12 +107,11 @@ const Admin = () => {
 
   const fetchServers = async () => {
     setLoadingServers(true);
-    setError(null);
     try {
-      // Use the correct foreign key relationship according to the database schema
+      // Use correct join syntax for the user profile information
       const { data, error } = await supabase
         .from('servers')
-        .select('*, profiles(username)')
+        .select('*, profiles:user_id(*)')
         .order('created_at', { ascending: false });
       
       if (error) {
@@ -129,7 +121,6 @@ const Admin = () => {
       setServers(data || []);
     } catch (error: any) {
       console.error('Error fetching servers:', error);
-      setError(error.message);
       toast({
         title: t('admin.error-fetching-servers'),
         description: error.message || t('misc.error'),
@@ -267,10 +258,6 @@ const Admin = () => {
     setUserDialogOpen(true);
   };
 
-  const clearError = () => {
-    setError(null);
-  };
-
   if (loading) {
     return (
       <div className="container py-12 flex justify-center">
@@ -307,21 +294,6 @@ const Admin = () => {
             </Button>
           </div>
         </div>
-        
-        {error && (
-          <div className="bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 p-4 rounded-md mb-6">
-            <p className="font-medium">{t('misc.error')}</p>
-            <p className="text-sm">{error}</p>
-            <Button 
-              variant="outline" 
-              className="mt-2 bg-red-50 hover:bg-red-100 text-red-800 border-red-200 hover:border-red-300 dark:bg-red-900/40 dark:hover:bg-red-900/60 dark:text-red-200 dark:border-red-800"
-              size="sm"
-              onClick={clearError}
-            >
-              {t('admin.close')}
-            </Button>
-          </div>
-        )}
         
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6">
@@ -434,17 +406,10 @@ const Admin = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {users.length === 0 && !loadingUsers && (
+                    {users.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
-                          {t('admin.no-users-found')}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                    {loadingUsers && (
-                      <TableRow>
-                        <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
-                          {t('misc.loading')}
+                          {loadingUsers ? t('misc.loading') : t('admin.no-users-found')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -506,17 +471,10 @@ const Admin = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {bots.length === 0 && !loadingBots && (
+                    {bots.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
-                          {t('admin.no-bots-found')}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                    {loadingBots && (
-                      <TableRow>
-                        <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
-                          {t('misc.loading')}
+                          {loadingBots ? t('misc.loading') : t('admin.no-bots-found')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -590,17 +548,10 @@ const Admin = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {pendingBots.length === 0 && !loadingBots && (
+                    {pendingBots.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
-                          {t('admin.no-pending-bots')}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                    {loadingBots && (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
-                          {t('misc.loading')}
+                          {loadingBots ? t('misc.loading') : t('admin.no-pending-bots')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -645,7 +596,7 @@ const Admin = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>{t('server.name')}</TableHead>
-                      <TableHead>{t('bot.owner')}</TableHead>
+                      <TableHead>{t('server.owner')}</TableHead>
                       <TableHead>{t('server.members')}</TableHead>
                       <TableHead>{t('admin.added')}</TableHead>
                       <TableHead className="text-right">{t('admin.actions')}</TableHead>
@@ -672,17 +623,10 @@ const Admin = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {servers.length === 0 && !loadingServers && (
+                    {servers.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
-                          {t('admin.no-servers-found')}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                    {loadingServers && (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
-                          {t('misc.loading')}
+                          {loadingServers ? t('misc.loading') : t('admin.no-servers-found')}
                         </TableCell>
                       </TableRow>
                     )}
