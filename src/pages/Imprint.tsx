@@ -21,10 +21,10 @@ const Imprint = () => {
           <CardContent className="prose dark:prose-invert">
             <h2>{t('legal.company-information')}</h2>
             <p>
-              {t('legal.company-name') || "Discord Bot Directory"}<br />
-              {t('legal.company-address') || "123 Bot Street"}<br />
-              {t('legal.company-city') || "Bot City, 10115"}<br />
-              {t('legal.company-country') || "Botland"}
+              {t('legal.company-name')}<br />
+              {t('legal.company-address')}<br />
+              {t('legal.company-city')}<br />
+              {t('legal.company-country')}
             </p>
             
             <h2>{t('legal.contact')}</h2>
@@ -34,28 +34,16 @@ const Imprint = () => {
             </p>
             
             <h2>{t('legal.registration')}</h2>
-            <p>
-              {t('legal.registration-text') || 
-                "Registered in the Commercial Register of Bot City. Registration Number: BOT123456"}
-            </p>
+            <p>{t('legal.registration-text')}</p>
             
             <h2>{t('legal.vat')}</h2>
-            <p>
-              {t('legal.vat-text') || 
-                "VAT Identification Number according to § 27a of the Value Added Tax Act: DE123456789"}
-            </p>
+            <p>{t('legal.vat-text')}</p>
             
             <h2>{t('legal.responsible-content')}</h2>
-            <p>
-              {t('legal.responsible-content-text') || 
-                "Person responsible for content in accordance with § 55 Abs. 2 RStV: John Doe, 123 Bot Street, Bot City, 10115 Botland"}
-            </p>
+            <p>{t('legal.responsible-content-text')}</p>
             
             <h2>{t('legal.dispute-resolution')}</h2>
-            <p>
-              {t('legal.dispute-resolution-text') || 
-                "The European Commission provides a platform for online dispute resolution (OS): https://ec.europa.eu/consumers/odr. We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board."}
-            </p>
+            <p>{t('legal.dispute-resolution-text')}</p>
           </CardContent>
         </Card>
       </motion.div>

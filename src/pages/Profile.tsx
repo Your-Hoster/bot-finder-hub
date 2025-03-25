@@ -122,7 +122,7 @@ const Profile = () => {
   if (loading) {
     return (
       <div className="container py-12 flex justify-center">
-        <div>Loading...</div>
+        <div>{t('misc.loading')}</div>
       </div>
     );
   }

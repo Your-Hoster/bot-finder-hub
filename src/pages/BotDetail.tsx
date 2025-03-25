@@ -62,18 +62,29 @@ const BotDetail = () => {
           throw error;
         }
         
-        // Make sure data contains all required fields by checking and setting default values
-        const botData = {
-          ...data,
-          // Explicitly add support_url even if it might not exist in data
-          support_url: data.support_url || null,
-          // Properly handle profiles data
-          profiles: data.profiles && typeof data.profiles === 'object' 
-            ? data.profiles 
-            : { username: null }
+        // Ensure data has all required fields with proper types
+        const botData: Bot = {
+          id: data.id,
+          name: data.name,
+          discord_id: data.discord_id,
+          short_description: data.short_description,
+          description: data.description,
+          image_url: data.image_url,
+          tags: data.tags,
+          invite_url: data.invite_url,
+          support_url: data.support_url,
+          website_url: data.website_url,
+          github_url: data.github_url,
+          prefix: data.prefix,
+          user_id: data.user_id,
+          stars: data.stars,
+          verified: data.verified,
+          created_at: data.created_at,
+          updated_at: data.updated_at,
+          profiles: data.profiles
         };
         
-        setBot(botData as Bot);
+        setBot(botData);
       } catch (error: any) {
         console.error('Error fetching bot:', error);
         toast({
