@@ -81,7 +81,7 @@ const Admin = () => {
     setLoadingBots(true);
     setError(null);
     try {
-      // Fetch all bots with correct join
+      // Use the foreign key relationship specified in the database schema
       const { data: allBots, error: botsError } = await supabase
         .from('bots')
         .select('*, profiles(username)')
@@ -116,7 +116,7 @@ const Admin = () => {
     setLoadingServers(true);
     setError(null);
     try {
-      // Use correct join syntax for the user profile information
+      // Use the correct foreign key relationship according to the database schema
       const { data, error } = await supabase
         .from('servers')
         .select('*, profiles(username)')
@@ -267,6 +267,10 @@ const Admin = () => {
     setUserDialogOpen(true);
   };
 
+  const clearError = () => {
+    setError(null);
+  };
+
   if (loading) {
     return (
       <div className="container py-12 flex justify-center">
@@ -312,7 +316,7 @@ const Admin = () => {
               variant="outline" 
               className="mt-2 bg-red-50 hover:bg-red-100 text-red-800 border-red-200 hover:border-red-300 dark:bg-red-900/40 dark:hover:bg-red-900/60 dark:text-red-200 dark:border-red-800"
               size="sm"
-              onClick={() => setError(null)}
+              onClick={clearError}
             >
               {t('admin.close')}
             </Button>
@@ -641,7 +645,7 @@ const Admin = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>{t('server.name')}</TableHead>
-                      <TableHead>{t('server.owner')}</TableHead>
+                      <TableHead>{t('bot.owner')}</TableHead>
                       <TableHead>{t('server.members')}</TableHead>
                       <TableHead>{t('admin.added')}</TableHead>
                       <TableHead className="text-right">{t('admin.actions')}</TableHead>

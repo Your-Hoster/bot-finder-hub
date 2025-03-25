@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Define the supported languages
@@ -185,6 +186,23 @@ const translations = {
     'footer.contact': 'Contact',
     'footer.language': 'Language',
     'footer.rights': 'All rights reserved.',
+    
+    // Cookie Banner
+    'cookie.title': 'Cookie Settings',
+    'cookie.description': 'We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic.',
+    'cookie.customize_message': 'You can customize your cookie preferences at any time.',
+    'cookie.necessary': 'Necessary Cookies',
+    'cookie.necessary_description': 'These cookies are essential for the website to function properly.',
+    'cookie.analytics': 'Analytics Cookies',
+    'cookie.analytics_description': 'These cookies help us understand how visitors interact with the website.',
+    'cookie.preferences': 'Preferences',
+    'cookie.preferences_description': 'These cookies allow the website to remember choices you make.',
+    'cookie.marketing': 'Marketing Cookies',
+    'cookie.marketing_description': 'These cookies are used to track visitors across websites.',
+    'cookie.accept': 'Accept All',
+    'cookie.decline': 'Decline',
+    'cookie.save': 'Save Preferences',
+    'cookie.cancel': 'Cancel',
   },
   de: {
     // Navigation
@@ -356,6 +374,23 @@ const translations = {
     'footer.contact': 'Kontakt',
     'footer.language': 'Sprache',
     'footer.rights': 'Alle Rechte vorbehalten.',
+    
+    // Cookie Banner
+    'cookie.title': 'Cookie-Einstellungen',
+    'cookie.description': 'Wir verwenden Cookies, um Ihr Surferlebnis zu verbessern, personalisierte Anzeigen oder Inhalte bereitzustellen und unseren Datenverkehr zu analysieren.',
+    'cookie.customize_message': 'Sie können Ihre Cookie-Einstellungen jederzeit anpassen.',
+    'cookie.necessary': 'Notwendige Cookies',
+    'cookie.necessary_description': 'Diese Cookies sind für das reibungslose Funktionieren der Website unerlässlich.',
+    'cookie.analytics': 'Analyse-Cookies',
+    'cookie.analytics_description': 'Diese Cookies helfen uns zu verstehen, wie Besucher mit der Website interagieren.',
+    'cookie.preferences': 'Präferenzen',
+    'cookie.preferences_description': 'Diese Cookies ermöglichen es der Website, sich an Ihre Auswahl zu erinnern.',
+    'cookie.marketing': 'Marketing-Cookies',
+    'cookie.marketing_description': 'Diese Cookies werden verwendet, um Besucher auf verschiedenen Websites zu verfolgen.',
+    'cookie.accept': 'Alle akzeptieren',
+    'cookie.decline': 'Ablehnen',
+    'cookie.save': 'Einstellungen speichern',
+    'cookie.cancel': 'Abbrechen',
   },
   es: {
     // Navigation
@@ -527,6 +562,23 @@ const translations = {
     'footer.contact': 'Contacto',
     'footer.language': 'Idioma',
     'footer.rights': 'Todos los derechos reservados.',
+    
+    // Cookie Banner
+    'cookie.title': 'Configuración de Cookies',
+    'cookie.description': 'Utilizamos cookies para mejorar su experiencia de navegación, mostrar anuncios o contenido personalizado y analizar nuestro tráfico.',
+    'cookie.customize_message': 'Puede personalizar sus preferencias de cookies en cualquier momento.',
+    'cookie.necessary': 'Cookies Necesarias',
+    'cookie.necessary_description': 'Estas cookies son esenciales para el funcionamiento del sitio web.',
+    'cookie.analytics': 'Cookies Analíticas',
+    'cookie.analytics_description': 'Estas cookies nos ayudan a entender cómo interactúan los visitantes con el sitio web.',
+    'cookie.preferences': 'Preferencias',
+    'cookie.preferences_description': 'Estas cookies permiten que el sitio web recuerde las elecciones que hace.',
+    'cookie.marketing': 'Cookies de Marketing',
+    'cookie.marketing_description': 'Estas cookies se utilizan para rastrear a los visitantes en diferentes sitios web.',
+    'cookie.accept': 'Aceptar Todo',
+    'cookie.decline': 'Rechazar',
+    'cookie.save': 'Guardar Preferencias',
+    'cookie.cancel': 'Cancelar',
   }
 };
 
