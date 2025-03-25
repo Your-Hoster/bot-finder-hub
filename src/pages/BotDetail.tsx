@@ -55,7 +55,7 @@ const BotDetail = () => {
           .from('bots')
           .select(`
             *,
-            profiles:profiles(username)
+            profiles:user_id(username)
           `)
           .eq('id', id)
           .single();
