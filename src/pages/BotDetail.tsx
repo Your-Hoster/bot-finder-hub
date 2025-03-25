@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -62,7 +61,6 @@ const BotDetail = () => {
           throw error;
         }
         
-        // Ensure data has all required fields with proper types
         const botData: Bot = {
           id: data.id,
           name: data.name,
@@ -72,7 +70,7 @@ const BotDetail = () => {
           image_url: data.image_url,
           tags: data.tags,
           invite_url: data.invite_url,
-          support_url: data.support_url, // Make sure this field exists
+          support_url: data.support_url || null,
           website_url: data.website_url,
           github_url: data.github_url,
           prefix: data.prefix,
@@ -81,7 +79,7 @@ const BotDetail = () => {
           verified: data.verified,
           created_at: data.created_at,
           updated_at: data.updated_at,
-          profiles: data.profiles
+          profiles: data.profiles || { username: null }
         };
         
         setBot(botData);
@@ -275,3 +273,4 @@ const BotDetail = () => {
 };
 
 export default BotDetail;
+
