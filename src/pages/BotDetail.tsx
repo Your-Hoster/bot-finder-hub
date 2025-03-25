@@ -72,7 +72,7 @@ const BotDetail = () => {
           image_url: data.image_url,
           tags: data.tags,
           invite_url: data.invite_url,
-          support_url: data.support_url,
+          support_url: data.support_url, // Make sure this field exists
           website_url: data.website_url,
           github_url: data.github_url,
           prefix: data.prefix,
