@@ -79,7 +79,7 @@ const BotDetail = () => {
           verified: data.verified,
           created_at: data.created_at,
           updated_at: data.updated_at,
-          profiles: data.profiles || { username: null }
+          profiles: typeof data.profiles === 'object' ? data.profiles : { username: null }
         };
         
         setBot(botData);
@@ -273,4 +273,3 @@ const BotDetail = () => {
 };
 
 export default BotDetail;
-
