@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -198,7 +197,7 @@ const DiscordBotSetup = () => {
         
         <TabsContent value="integration">
           <div className="space-y-6">
-            <Alert variant="warning">
+            <Alert variant="default">
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>Important</AlertTitle>
               <AlertDescription>
