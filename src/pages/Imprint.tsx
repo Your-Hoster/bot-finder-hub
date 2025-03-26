@@ -21,29 +21,33 @@ const Imprint = () => {
           <CardContent className="prose dark:prose-invert">
             <h2>{t('legal.company-information')}</h2>
             <p>
-              {t('legal.company-name')}<br />
-              {t('legal.company-address')}<br />
-              {t('legal.company-city')}<br />
-              {t('legal.company-country')}
+              BotSearch GmbH<br />
+              Musterstraße 123<br />
+              10115 Berlin<br />
+              Deutschland
             </p>
             
             <h2>{t('legal.contact')}</h2>
             <p>
-              {t('legal.email')}: contact@example.com<br />
-              {t('legal.phone')}: +1 234 567 890
+              {t('legal.email')}: contact@botsearch.example.com<br />
+              {t('legal.phone')}: +49 30 123456789
             </p>
             
             <h2>{t('legal.registration')}</h2>
-            <p>{t('legal.registration-text')}</p>
+            <p>Handelsregister: Amtsgericht Berlin-Charlottenburg<br />
+            Registernummer: HRB 123456</p>
             
             <h2>{t('legal.vat')}</h2>
-            <p>{t('legal.vat-text')}</p>
+            <p>USt-IdNr.: DE123456789</p>
             
             <h2>{t('legal.responsible-content')}</h2>
-            <p>{t('legal.responsible-content-text')}</p>
+            <p>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:<br />
+            Max Mustermann<br />
+            Musterstraße 123<br />
+            10115 Berlin</p>
             
             <h2>{t('legal.dispute-resolution')}</h2>
-            <p>{t('legal.dispute-resolution-text')}</p>
+            <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit, die Sie unter <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr/</a> finden. Wir sind nicht bereit und nicht verpflichtet, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
           </CardContent>
         </Card>
       </motion.div>

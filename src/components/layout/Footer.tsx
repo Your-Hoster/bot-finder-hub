@@ -1,9 +1,11 @@
 
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const Footer = () => {
   const { t } = useLanguage();
+  const { isAdmin } = useAuth();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -17,13 +19,13 @@ export const Footer = () => {
               <span>Search</span>
             </Link>
             <p className="mt-4 text-muted-foreground text-sm">
-              Find and add Discord bots to enhance your server experience.
+              {t('footer.description')}
             </p>
           </div>
 
           {/* Links 1 */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">Resources</h3>
+            <h3 className="text-sm font-semibold mb-4">{t('footer.resources')}</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/bots" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -36,16 +38,23 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/search" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  {t('nav.search')}
+                <Link to="/servers" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t('nav.servers')}
                 </Link>
               </li>
+              {isAdmin && (
+                <li>
+                  <Link to="/discord-setup" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    {t('nav.discord-setup')}
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 
           {/* Links 2 */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">Account</h3>
+            <h3 className="text-sm font-semibold mb-4">{t('footer.account')}</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -67,7 +76,7 @@ export const Footer = () => {
 
           {/* Links 3 */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">Legal</h3>
+            <h3 className="text-sm font-semibold mb-4">{t('footer.legal')}</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -90,10 +99,10 @@ export const Footer = () => {
 
         <div className="mt-10 pt-6 border-t flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} BotSearch. {t('footer.rights')}
+            © {currentYear} BotSearch GmbH. {t('footer.rights')}
           </p>
           <div className="mt-4 md:mt-0 text-sm text-muted-foreground">
-            Built with ♥ for Discord communities
+            {t('footer.built-with-love')}
           </div>
         </div>
       </div>

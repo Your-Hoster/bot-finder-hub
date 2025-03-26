@@ -168,13 +168,40 @@ const translations = {
     'admin.no-admin-rights': 'You do not have admin rights to access this page',
     'admin.user-detailed-info': 'Detailed information about this user',
     
-    // Footer
-    'footer.privacy': 'Privacy Policy',
-    'footer.imprint': 'Imprint',
-    'footer.terms': 'Terms of Service',
-    'footer.contact': 'Contact',
-    'footer.language': 'Language',
-    'footer.rights': 'All rights reserved.',
+    // Discord integration-related translations
+    discord: {
+      "integration": "Discord Integration",
+      "bot-setup": "Discord Bot Setup",
+      "bot-desc": "Configure and manage your Discord bot for server integration.",
+      "quick-setup": "Quick Setup",
+      "setup-instructions": "Follow these steps to set up your Discord bot with bump and invite commands.",
+      "invite-url": "Bot Invite URL",
+      "invite-placeholder": "Generate an invite URL for your bot",
+      "generate": "Generate URL",
+      "commands-endpoint": "Commands Endpoint",
+      "commands-placeholder": "Setup your bot's slash commands",
+      "setup-commands": "Setup Commands",
+      "available-commands": "Available Commands:",
+      "bump-desc": "Bumps your server to the top of the list",
+      "invite-cmd-desc": "Generates an invitation link for your server",
+      "invite-generated": "Invite URL Generated",
+      "invite-desc": "Use this URL to add the bot to your Discord server",
+      "commands-setup": "Commands Setup",
+      "commands-desc": "Slash commands are now ready to use in your server"
+    },
+    
+    // Update footer translations
+    footer: {
+      "rights": "All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "imprint": "Imprint",
+      "resources": "Resources",
+      "account": "Account",
+      "legal": "Legal",
+      "description": "Find and add Discord bots to enhance your server experience.",
+      "built-with-love": "Built with ♥ for Discord communities"
+    }
   },
   de: {
     // Navigation
@@ -329,13 +356,40 @@ const translations = {
     'admin.no-admin-rights': 'Sie haben keine Administratorrechte, um auf diese Seite zuzugreifen',
     'admin.user-detailed-info': 'Detaillierte Informationen zu diesem Benutzer',
     
-    // Footer
-    'footer.privacy': 'Datenschutz',
-    'footer.imprint': 'Impressum',
-    'footer.terms': 'Nutzungsbedingungen',
-    'footer.contact': 'Kontakt',
-    'footer.language': 'Sprache',
-    'footer.rights': 'Alle Rechte vorbehalten.',
+    // Discord integration-related translations
+    discord: {
+      "integration": "Discord Integration",
+      "bot-setup": "Discord Bot Einrichtung",
+      "bot-desc": "Konfigurieren und verwalten Sie Ihren Discord-Bot für die Serverintegration.",
+      "quick-setup": "Schnelleinrichtung",
+      "setup-instructions": "Folgen Sie diesen Schritten, um Ihren Discord-Bot mit Bump- und Einladungsbefehlen einzurichten.",
+      "invite-url": "Bot Einladungs-URL",
+      "invite-placeholder": "Generieren Sie eine Einladungs-URL für Ihren Bot",
+      "generate": "URL generieren",
+      "commands-endpoint": "Befehls-Endpunkt",
+      "commands-placeholder": "Richten Sie die Slash-Befehle Ihres Bots ein",
+      "setup-commands": "Befehle einrichten",
+      "available-commands": "Verfügbare Befehle:",
+      "bump-desc": "Bringt Ihren Server an die Spitze der Liste",
+      "invite-cmd-desc": "Erstellt einen Einladungslink für Ihren Server",
+      "invite-generated": "Einladungs-URL generiert",
+      "invite-desc": "Verwenden Sie diese URL, um den Bot zu Ihrem Discord-Server hinzuzufügen",
+      "commands-setup": "Befehle eingerichtet",
+      "commands-desc": "Slash-Befehle sind jetzt in Ihrem Server einsatzbereit"
+    },
+    
+    // Update footer translations
+    footer: {
+      "rights": "Alle Rechte vorbehalten.",
+      "privacy": "Datenschutz",
+      "terms": "Nutzungsbedingungen",
+      "imprint": "Impressum",
+      "resources": "Ressourcen",
+      "account": "Konto",
+      "legal": "Rechtliches",
+      "description": "Finden und fügen Sie Discord-Bots hinzu, um Ihr Servererlebnis zu verbessern.",
+      "built-with-love": "Mit ♥ für Discord-Communities erstellt"
+    }
   },
   es: {
     // Navigation
@@ -490,13 +544,40 @@ const translations = {
     'admin.no-admin-rights': 'No tiene derechos de administrador para acceder a esta página',
     'admin.user-detailed-info': 'Información detallada sobre este usuario',
     
-    // Footer
-    'footer.privacy': 'Política de Privacidad',
-    'footer.imprint': 'Aviso Legal',
-    'footer.terms': 'Términos de Servicio',
-    'footer.contact': 'Contacto',
-    'footer.language': 'Idioma',
-    'footer.rights': 'Todos los derechos reservados.',
+    // Discord integration-related translations
+    discord: {
+      "integration": "Discord Integration",
+      "bot-setup": "Discord Bot Setup",
+      "bot-desc": "Configure and manage your Discord bot for server integration.",
+      "quick-setup": "Quick Setup",
+      "setup-instructions": "Follow these steps to set up your Discord bot with bump and invite commands.",
+      "invite-url": "Bot Invite URL",
+      "invite-placeholder": "Generate an invite URL for your bot",
+      "generate": "Generate URL",
+      "commands-endpoint": "Commands Endpoint",
+      "commands-placeholder": "Setup your bot's slash commands",
+      "setup-commands": "Setup Commands",
+      "available-commands": "Available Commands:",
+      "bump-desc": "Bumps your server to the top of the list",
+      "invite-cmd-desc": "Generates an invitation link for your server",
+      "invite-generated": "Invite URL Generated",
+      "invite-desc": "Use this URL to add the bot to your Discord server",
+      "commands-setup": "Commands Setup",
+      "commands-desc": "Slash commands are now ready to use in your server"
+    },
+    
+    // Update footer translations
+    footer: {
+      "rights": "Todos los derechos reservados.",
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio",
+      "imprint": "Aviso Legal",
+      "resources": "Recursos",
+      "account": "Cuenta",
+      "legal": "Legal",
+      "description": "Finden und fügen Sie Discord-Bots hinzu, um Ihr Servererlebnis zu verbessern.",
+      "built-with-love": "Mit ♥ für Discord-Communities erstellt"
+    }
   }
 };
 
