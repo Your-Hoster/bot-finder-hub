@@ -1,14 +1,32 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { 
-  InteractionType, 
-  InteractionResponseType
-} from "npm:discord-interactions";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Define constants for Discord interactions
+const InteractionType = {
+  PING: 1,
+  APPLICATION_COMMAND: 2,
+  MESSAGE_COMPONENT: 3,
+  APPLICATION_COMMAND_AUTOCOMPLETE: 4,
+  MODAL_SUBMIT: 5,
+};
+
+const InteractionResponseType = {
+  PONG: 1,
+  CHANNEL_MESSAGE_WITH_SOURCE: 4,
+  DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: 5,
+  DEFERRED_UPDATE_MESSAGE: 6,
+  UPDATE_MESSAGE: 7,
+  APPLICATION_COMMAND_AUTOCOMPLETE_RESULT: 8,
+  MODAL: 9,
+};
+
+// Initialize Supabase Admin client for database operations
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -187,25 +205,3 @@ async function handleBumpCommand(body: any) {
     console.error('Error in bump command:', error);
   }
 }
-
-// Define constants from discord-interactions
-const InteractionType = {
-  PING: 1,
-  APPLICATION_COMMAND: 2,
-  MESSAGE_COMPONENT: 3,
-  APPLICATION_COMMAND_AUTOCOMPLETE: 4,
-  MODAL_SUBMIT: 5,
-};
-
-const InteractionResponseType = {
-  PONG: 1,
-  CHANNEL_MESSAGE_WITH_SOURCE: 4,
-  DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: 5,
-  DEFERRED_UPDATE_MESSAGE: 6,
-  UPDATE_MESSAGE: 7,
-  APPLICATION_COMMAND_AUTOCOMPLETE_RESULT: 8,
-  MODAL: 9,
-};
-
-// Initialize Supabase Admin client for database operations
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";

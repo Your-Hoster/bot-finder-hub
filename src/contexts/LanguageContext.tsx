@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Define the supported languages
@@ -47,10 +48,30 @@ interface FooterTranslations {
   "built-with-love": string;
 }
 
+interface ThemeTranslations {
+  light: string;
+  dark: string;
+  system: string;
+}
+
+interface AccountThemeTranslations {
+  theme: ThemeTranslations;
+}
+
+interface AccountTranslations {
+  theme: ThemeTranslations;
+}
+
 interface LanguageTranslations {
-  [key: string]: string | DiscordTranslations | FooterTranslations;
+  [key: string]: string | DiscordTranslations | FooterTranslations | AccountTranslations | ThemeTranslations;
   discord: DiscordTranslations;
   footer: FooterTranslations;
+  account: AccountTranslations;
+}
+
+// Type guard function to check if a value is a string
+function isString(value: any): value is string {
+  return typeof value === 'string';
 }
 
 // Translations object
@@ -69,6 +90,7 @@ const translations: Record<Language, LanguageTranslations> = {
     'nav.servers': 'Servers',
     'nav.add-server': 'Add Server',
     'nav.account': 'Account',
+    'nav.discord-setup': 'Discord Setup',
     
     // Home page
     'home.title': 'Discover Discord Bots',
@@ -208,6 +230,15 @@ const translations: Record<Language, LanguageTranslations> = {
     'admin.no-admin-rights': 'You do not have admin rights to access this page',
     'admin.user-detailed-info': 'Detailed information about this user',
     
+    // Account settings
+    'account': {
+      'theme': {
+        'light': 'Light',
+        'dark': 'Dark',
+        'system': 'System'
+      }
+    },
+    
     // Discord integration-related translations
     discord: {
       "integration": "Discord Integration",
@@ -257,6 +288,7 @@ const translations: Record<Language, LanguageTranslations> = {
     'nav.servers': 'Server',
     'nav.add-server': 'Server hinzufügen',
     'nav.account': 'Konto',
+    'nav.discord-setup': 'Discord Einrichtung',
     
     // Home page
     'home.title': 'Entdecke Discord Bots',
@@ -396,6 +428,15 @@ const translations: Record<Language, LanguageTranslations> = {
     'admin.no-admin-rights': 'Sie haben keine Administratorrechte, um auf diese Seite zuzugreifen',
     'admin.user-detailed-info': 'Detaillierte Informationen zu diesem Benutzer',
     
+    // Account settings
+    'account': {
+      'theme': {
+        'light': 'Hell',
+        'dark': 'Dunkel',
+        'system': 'System'
+      }
+    },
+    
     // Discord integration-related translations
     discord: {
       "integration": "Discord Integration",
@@ -445,6 +486,7 @@ const translations: Record<Language, LanguageTranslations> = {
     'nav.servers': 'Servidores',
     'nav.add-server': 'Añadir Servidor',
     'nav.account': 'Cuenta',
+    'nav.discord-setup': 'Configuración Discord',
     
     // Home page
     'home.title': 'Descubre Bots de Discord',
@@ -584,6 +626,15 @@ const translations: Record<Language, LanguageTranslations> = {
     'admin.no-admin-rights': 'No tiene derechos de administrador para acceder a esta página',
     'admin.user-detailed-info': 'Información detallada sobre este usuario',
     
+    // Account settings
+    'account': {
+      'theme': {
+        'light': 'Claro',
+        'dark': 'Oscuro',
+        'system': 'Sistema'
+      }
+    },
+    
     // Discord integration-related translations
     discord: {
       "integration": "Integración de Discord",
@@ -615,7 +666,7 @@ const translations: Record<Language, LanguageTranslations> = {
       "resources": "Recursos",
       "account": "Cuenta",
       "legal": "Legal",
-      "description": "Finden und fügen Sie Discord-Bots hinzu, um Ihr Servererlebnis zu verbessern.",
+      "description": "Encuentra y añade bots de Discord para mejorar la experiencia de tu servidor.",
       "built-with-love": "Construido con ♥ para comunidades de Discord"
     }
   }
@@ -654,7 +705,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       value = value[part];
     }
     
-    return value !== undefined ? String(value) : key;
+    // Ensure we return a string
+    return isString(value) ? value : key;
   };
 
   // Set document language on initial load
