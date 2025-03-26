@@ -20,7 +20,7 @@ type Bot = {
   image_url: string | null;
   tags: string[] | null;
   invite_url: string | null;
-  support_url: string | null;
+  support_server_url?: string | null;
   website_url: string | null;
   github_url: string | null;
   prefix: string | null;
@@ -73,7 +73,7 @@ const BotDetail = () => {
           image_url: data.image_url,
           tags: data.tags,
           invite_url: data.invite_url,
-          support_url: data.support_url || null,
+          support_server_url: data.support_server_url || null,
           website_url: data.website_url,
           github_url: data.github_url,
           prefix: data.prefix,
@@ -230,9 +230,9 @@ const BotDetail = () => {
               </Button>
             )}
             
-            {bot?.support_url && (
+            {bot?.support_server_url && (
               <Button variant="outline" className="w-full" asChild>
-                <a href={bot.support_url} target="_blank" rel="noopener noreferrer">
+                <a href={bot.support_server_url} target="_blank" rel="noopener noreferrer">
                   <MessageSquare className="mr-2 h-4 w-4" />
                   {t('bot.support')}
                 </a>

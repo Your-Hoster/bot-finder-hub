@@ -13,8 +13,48 @@ interface LanguageContextType {
 // Create the context
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// Define types for translations
+interface DiscordTranslations {
+  integration: string;
+  "bot-setup": string;
+  "bot-desc": string;
+  "quick-setup": string;
+  "setup-instructions": string;
+  "invite-url": string;
+  "invite-placeholder": string;
+  generate: string;
+  "commands-endpoint": string;
+  "commands-placeholder": string;
+  "setup-commands": string;
+  "available-commands": string;
+  "bump-desc": string;
+  "invite-cmd-desc": string;
+  "invite-generated": string;
+  "invite-desc": string;
+  "commands-setup": string;
+  "commands-desc": string;
+}
+
+interface FooterTranslations {
+  rights: string;
+  privacy: string;
+  terms: string;
+  imprint: string;
+  resources: string;
+  account: string;
+  legal: string;
+  description: string;
+  "built-with-love": string;
+}
+
+interface LanguageTranslations {
+  [key: string]: string | DiscordTranslations | FooterTranslations;
+  discord: DiscordTranslations;
+  footer: FooterTranslations;
+}
+
 // Translations object
-const translations = {
+const translations: Record<Language, LanguageTranslations> = {
   en: {
     // Navigation
     'nav.home': 'Home',
@@ -546,24 +586,24 @@ const translations = {
     
     // Discord integration-related translations
     discord: {
-      "integration": "Discord Integration",
-      "bot-setup": "Discord Bot Setup",
-      "bot-desc": "Configure and manage your Discord bot for server integration.",
-      "quick-setup": "Quick Setup",
-      "setup-instructions": "Follow these steps to set up your Discord bot with bump and invite commands.",
-      "invite-url": "Bot Invite URL",
-      "invite-placeholder": "Generate an invite URL for your bot",
-      "generate": "Generate URL",
-      "commands-endpoint": "Commands Endpoint",
-      "commands-placeholder": "Setup your bot's slash commands",
-      "setup-commands": "Setup Commands",
-      "available-commands": "Available Commands:",
-      "bump-desc": "Bumps your server to the top of the list",
-      "invite-cmd-desc": "Generates an invitation link for your server",
-      "invite-generated": "Invite URL Generated",
-      "invite-desc": "Use this URL to add the bot to your Discord server",
-      "commands-setup": "Commands Setup",
-      "commands-desc": "Slash commands are now ready to use in your server"
+      "integration": "Integración de Discord",
+      "bot-setup": "Configuración del Bot de Discord",
+      "bot-desc": "Configure y administre su bot de Discord para la integración del servidor.",
+      "quick-setup": "Configuración Rápida",
+      "setup-instructions": "Siga estos pasos para configurar su bot de Discord con comandos de impulso e invitación.",
+      "invite-url": "URL de Invitación del Bot",
+      "invite-placeholder": "Genere una URL de invitación para su bot",
+      "generate": "Generar URL",
+      "commands-endpoint": "Punto Final de Comandos",
+      "commands-placeholder": "Configure los comandos slash de su bot",
+      "setup-commands": "Configurar Comandos",
+      "available-commands": "Comandos Disponibles:",
+      "bump-desc": "Impulsa su servidor a la parte superior de la lista",
+      "invite-cmd-desc": "Genera un enlace de invitación para su servidor",
+      "invite-generated": "URL de Invitación Generada",
+      "invite-desc": "Use esta URL para agregar el bot a su servidor de Discord",
+      "commands-setup": "Comandos Configurados",
+      "commands-desc": "Los comandos slash ahora están listos para usar en su servidor"
     },
     
     // Update footer translations
@@ -576,7 +616,7 @@ const translations = {
       "account": "Cuenta",
       "legal": "Legal",
       "description": "Finden und fügen Sie Discord-Bots hinzu, um Ihr Servererlebnis zu verbessern.",
-      "built-with-love": "Mit ♥ für Discord-Communities erstellt"
+      "built-with-love": "Construido con ♥ para comunidades de Discord"
     }
   }
 };
@@ -606,7 +646,15 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Translate a key
   const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations[typeof language]] || key;
+    const keyParts = key.split('.');
+    let value: any = translations[language];
+    
+    for (const part of keyParts) {
+      if (value === undefined) return key;
+      value = value[part];
+    }
+    
+    return value !== undefined ? String(value) : key;
   };
 
   // Set document language on initial load

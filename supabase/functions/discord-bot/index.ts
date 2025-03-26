@@ -2,9 +2,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { 
   InteractionType, 
-  InteractionResponseType,
-  verifyKey
-} from "https://deno.land/x/discord_interactions@v0.4.0/mod.ts";
+  InteractionResponseType
+} from "npm:discord-interactions";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -34,7 +33,8 @@ serve(async (req) => {
     const bodyText = await req.text();
     
     // Verify the request is coming from Discord
-    const isValid = verifyKey(
+    // Using native crypto methods instead of external library
+    const isValid = await verifyDiscordRequest(
       bodyText,
       signature,
       timestamp,
@@ -121,10 +121,53 @@ serve(async (req) => {
   }
 });
 
+// Verify Discord request using native crypto
+async function verifyDiscordRequest(body: string, signature: string, timestamp: string, clientPublicKey: string): Promise<boolean> {
+  try {
+    // Convert the Discord public key to a crypto key
+    const publicKey = await crypto.subtle.importKey(
+      'raw',
+      hexToUint8Array(clientPublicKey),
+      {
+        name: 'NODE-ED25519',
+        namedCurve: 'NODE-ED25519',
+      },
+      false,
+      ['verify']
+    );
+    
+    // Create the message to verify
+    const message = new TextEncoder().encode(timestamp + body);
+    
+    // Verify the signature
+    return await crypto.subtle.verify(
+      'NODE-ED25519',
+      publicKey,
+      hexToUint8Array(signature),
+      message
+    );
+  } catch (err) {
+    console.error('Error verifying request:', err);
+    return false;
+  }
+}
+
+// Helper function to convert hex string to Uint8Array
+function hexToUint8Array(hex: string): Uint8Array {
+  const pairs = hex.match(/[\dA-F]{2}/gi) || [];
+  return new Uint8Array(
+    pairs.map((s) => parseInt(s, 16))
+  );
+}
+
 async function handleBumpCommand(body: any) {
   try {
     // Update the server's bumped time in our database
-    const { data: { session } } = await supabaseAdmin.auth.getSession();
+    // Initialize Supabase Admin client for database operations
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') || '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+    );
     
     if (!body.guild_id) {
       console.error('No guild_id provided in bump command');
@@ -145,10 +188,24 @@ async function handleBumpCommand(body: any) {
   }
 }
 
-// Initialize Supabase Admin client for database operations
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.7';
+// Define constants from discord-interactions
+const InteractionType = {
+  PING: 1,
+  APPLICATION_COMMAND: 2,
+  MESSAGE_COMPONENT: 3,
+  APPLICATION_COMMAND_AUTOCOMPLETE: 4,
+  MODAL_SUBMIT: 5,
+};
 
-const supabaseAdmin = createClient(
-  Deno.env.get('SUPABASE_URL') || '',
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
-);
+const InteractionResponseType = {
+  PONG: 1,
+  CHANNEL_MESSAGE_WITH_SOURCE: 4,
+  DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: 5,
+  DEFERRED_UPDATE_MESSAGE: 6,
+  UPDATE_MESSAGE: 7,
+  APPLICATION_COMMAND_AUTOCOMPLETE_RESULT: 8,
+  MODAL: 9,
+};
+
+// Initialize Supabase Admin client for database operations
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
