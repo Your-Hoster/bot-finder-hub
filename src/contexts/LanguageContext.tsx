@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Define the supported languages
@@ -116,6 +115,7 @@ const translations = {
     'admin.servers': 'Discord Servers',
     'admin.overview': 'Overview',
     'admin.user-management': 'User Management',
+    'admin.manage-users-permissions': 'Manage users and their permissions',
     'admin.verified-bots': 'Verified Bots',
     'admin.pending-bots': 'Pending Verification',
     'admin.server-management': 'Server Management',
@@ -134,6 +134,40 @@ const translations = {
     'admin.user-details': 'User Details',
     'admin.close': 'Close',
     'admin.error-fetching-bots': 'Error fetching bots',
+    'admin.error-fetching-users': 'Error fetching users',
+    'admin.error-fetching-servers': 'Error fetching servers',
+    'admin.error-updating-admin-status': 'Error updating admin status',
+    'admin.error-verifying-bot': 'Error verifying bot',
+    'admin.error-deleting-bot': 'Error deleting bot',
+    'admin.error-deleting-server': 'Error deleting server',
+    'admin.admin-status-updated': 'Admin status updated',
+    'admin.user-is-now-admin': 'User is now an admin',
+    'admin.user-no-longer-admin': 'User is no longer an admin',
+    'admin.bot-verified': 'Bot verified',
+    'admin.bot-verified-success': 'Bot has been verified successfully',
+    'admin.bot-deleted': 'Bot deleted',
+    'admin.bot-deleted-success': 'Bot has been deleted successfully',
+    'admin.server-deleted': 'Server deleted',
+    'admin.server-deleted-success': 'Server has been deleted successfully',
+    'admin.confirm-delete-bot': 'Are you sure you want to delete this bot?',
+    'admin.confirm-delete-server': 'Are you sure you want to delete this server?',
+    'admin.access-denied': 'Access denied',
+    'admin.no-admin-rights': 'You do not have admin rights',
+    'admin.actions': 'Actions',
+    'admin.joined': 'Joined',
+    'admin.added': 'Added',
+    'admin.no-users-found': 'No users found',
+    'admin.no-bots-found': 'No bots found',
+    'admin.no-pending-bots': 'No pending bots',
+    'admin.no-servers-found': 'No servers found',
+    'admin.user-detailed-info': 'Detailed information about the user',
+    'admin.registered': 'Registered',
+    'admin.last-updated': 'Last Updated',
+    'admin.admin-status': 'Admin Status',
+    'admin.administrator': 'Administrator',
+    'admin.regular-user': 'Regular User',
+    'admin.bot-management': 'Bot Management',
+    'admin.bot-review': 'Review and approve pending bots',
     
     // Account manager
     'account.title': 'Account Manager',
@@ -155,6 +189,7 @@ const translations = {
     'footer.terms': 'Terms of Service',
     'footer.contact': 'Contact',
     'footer.language': 'Language',
+    'footer.rights': 'All rights reserved',
     
     // Misc
     'misc.loading': 'Loading...',
@@ -181,6 +216,16 @@ const translations = {
     'cookie.accept': 'Accept All',
     'cookie.decline': 'Decline',
     'cookie.preferences': 'Customize',
+    'cookie.save_preferences': 'Save Preferences',
+    'cookie.customize_notice': 'You can customize your cookie preferences at any time.',
+    'cookie.necessary': 'Necessary Cookies',
+    'cookie.necessary_description': 'These cookies are essential for the website to function properly.',
+    'cookie.analytics': 'Analytics Cookies',
+    'cookie.analytics_description': 'These cookies help us understand how visitors interact with the website.',
+    'cookie.preferences': 'Preferences Cookies',
+    'cookie.preferences_description': 'These cookies allow the website to remember choices you make.',
+    'cookie.marketing': 'Marketing Cookies',
+    'cookie.marketing_description': 'These cookies are used to track visitors across websites.',
     
     // Profile
     'profile.title': 'Profile',
@@ -363,6 +408,7 @@ const translations = {
     'admin.servers': 'Discord-Server',
     'admin.overview': 'Übersicht',
     'admin.user-management': 'Benutzerverwaltung',
+    'admin.manage-users-permissions': 'Benutzer und ihre Berechtigungen verwalten',
     'admin.verified-bots': 'Verifizierte Bots',
     'admin.pending-bots': 'Ausstehende Verifizierung',
     'admin.server-management': 'Serververwaltung',
@@ -381,6 +427,40 @@ const translations = {
     'admin.user-details': 'Benutzerdetails',
     'admin.close': 'Schließen',
     'admin.error-fetching-bots': 'Fehler beim Abrufen der Bots',
+    'admin.error-fetching-users': 'Fehler beim Abrufen der Benutzer',
+    'admin.error-fetching-servers': 'Fehler beim Abrufen der Server',
+    'admin.error-updating-admin-status': 'Fehler beim Aktualisieren des Admin-Status',
+    'admin.error-verifying-bot': 'Fehler beim Verifizieren des Bots',
+    'admin.error-deleting-bot': 'Fehler beim Löschen des Bots',
+    'admin.error-deleting-server': 'Fehler beim Löschen des Servers',
+    'admin.admin-status-updated': 'Admin-Status aktualisiert',
+    'admin.user-is-now-admin': 'Benutzer ist jetzt Admin',
+    'admin.user-no-longer-admin': 'Benutzer ist kein Admin mehr',
+    'admin.bot-verified': 'Bot verifiziert',
+    'admin.bot-verified-success': 'Bot wurde erfolgreich verifiziert',
+    'admin.bot-deleted': 'Bot gelöscht',
+    'admin.bot-deleted-success': 'Bot wurde erfolgreich gelöscht',
+    'admin.server-deleted': 'Server gelöscht',
+    'admin.server-deleted-success': 'Server wurde erfolgreich gelöscht',
+    'admin.confirm-delete-bot': 'Sind Sie sicher, dass Sie diesen Bot löschen möchten?',
+    'admin.confirm-delete-server': 'Sind Sie sicher, dass Sie diesen Server löschen möchten?',
+    'admin.access-denied': 'Zugriff verweigert',
+    'admin.no-admin-rights': 'Sie haben keine Admin-Rechte',
+    'admin.actions': 'Aktionen',
+    'admin.joined': 'Beigetreten',
+    'admin.added': 'Hinzugefügt',
+    'admin.no-users-found': 'Keine Benutzer gefunden',
+    'admin.no-bots-found': 'Keine Bots gefunden',
+    'admin.no-pending-bots': 'Keine ausstehenden Bots',
+    'admin.no-servers-found': 'Keine Server gefunden',
+    'admin.user-detailed-info': 'Detaillierte Informationen über den Benutzer',
+    'admin.registered': 'Registriert',
+    'admin.last-updated': 'Zuletzt aktualisiert',
+    'admin.admin-status': 'Admin-Status',
+    'admin.administrator': 'Administrator',
+    'admin.regular-user': 'Normaler Benutzer',
+    'admin.bot-management': 'Bot-Verwaltung',
+    'admin.bot-review': 'Überprüfung und Genehmigung ausstehender Bots',
     
     // Account manager
     'account.title': 'Kontoverwaltung',
@@ -402,6 +482,7 @@ const translations = {
     'footer.terms': 'Nutzungsbedingungen',
     'footer.contact': 'Kontakt',
     'footer.language': 'Sprache',
+    'footer.rights': 'Alle Rechte vorbehalten',
     
     // Misc
     'misc.loading': 'Wird geladen...',
@@ -428,6 +509,16 @@ const translations = {
     'cookie.accept': 'Alle akzeptieren',
     'cookie.decline': 'Ablehnen',
     'cookie.preferences': 'Anpassen',
+    'cookie.save_preferences': 'Einstellungen speichern',
+    'cookie.customize_notice': 'Sie können Ihre Cookie-Einstellungen jederzeit anpassen.',
+    'cookie.necessary': 'Notwendige Cookies',
+    'cookie.necessary_description': 'Diese Cookies sind für das ordnungsgemäße Funktionieren der Website unerlässlich.',
+    'cookie.analytics': 'Analyse-Cookies',
+    'cookie.analytics_description': 'Diese Cookies helfen uns zu verstehen, wie Besucher mit der Website interagieren.',
+    'cookie.preferences': 'Präferenz-Cookies',
+    'cookie.preferences_description': 'Diese Cookies ermöglichen es der Website, sich an Ihre Entscheidungen zu erinnern.',
+    'cookie.marketing': 'Marketing-Cookies',
+    'cookie.marketing_description': 'Diese Cookies werden verwendet, um Besucher über Websites hinweg zu verfolgen.',
     
     // Profile
     'profile.title': 'Profil',
@@ -479,306 +570,4 @@ const translations = {
     'legal.third-party-disclosure': 'Weitergabe an Dritte',
     'legal.third-party-disclosure-text': 'Wir verkaufen, handeln oder übertragen Ihre persönlich identifizierbaren Informationen nicht ohne Ihre Zustimmung an Dritte.',
     'legal.third-party-links': 'Links zu Drittanbietern',
-    'legal.third-party-links-text': 'Unser Dienst kann Links zu Websites oder Diensten von Drittanbietern enthalten. Wir haben keine Kontrolle über und übernehmen keine Verantwortung für den Inhalt, die Datenschutzrichtlinien oder Praktiken von Websites oder Diensten Dritter.',
-    'legal.gdpr-compliance': 'DSGVO-Konformität',
-    'legal.gdpr-compliance-text': 'Für Benutzer in der Europäischen Union bieten wir Rechte bezüglich Ihrer personenbezogenen Daten, einschließlich des Rechts auf Zugriff, Korrektur oder Löschung Ihrer persönlichen Daten.',
-    'legal.childrens-privacy': 'Datenschutz für Kinder',
-    'legal.childrens-privacy-text': 'Unsere Dienste richten sich nicht an Personen unter 13 Jahren. Wir sammeln wissentlich keine persönlich identifizierbaren Informationen von Kindern unter 13 Jahren.',
-    'legal.changes-to-policy': 'Änderungen an der Richtlinie',
-    'legal.changes-to-policy-text': 'Wir können unsere Datenschutzrichtlinie von Zeit zu Zeit aktualisieren. Wir werden Sie über Änderungen informieren, indem wir die neue Datenschutzrichtlinie auf dieser Seite veröffentlichen.',
-    'legal.contact-us': 'Kontaktieren Sie uns',
-    'legal.contact-us-text': 'Wenn Sie Fragen zu dieser Datenschutzrichtlinie haben, kontaktieren Sie uns bitte über die Plattform oder über die angegebenen Kontaktinformationen.',
-    'legal.terms-of-service': 'Nutzungsbedingungen',
-    'legal.acceptance': 'Annahme der Bedingungen',
-    'legal.terms-acceptance-text': 'Durch den Zugriff auf und die Nutzung dieses Discord Bot Verzeichnisses akzeptieren Sie und stimmen zu, an die Bedingungen und Bestimmungen dieser Vereinbarung gebunden zu sein.',
-    'legal.eligibility': 'Teilnahmeberechtigung',
-    'legal.eligibility-text': 'Um unsere Dienste nutzen zu können, müssen Sie mindestens 13 Jahre alt sein und den Nutzungsbedingungen von Discord entsprechen.',
-    'legal.user-accounts': 'Benutzerkonten',
-    'legal.user-accounts-text': 'Benutzer sind für die Aufrechterhaltung der Sicherheit ihres Kontos und Passworts verantwortlich. Die Plattform kann und wird nicht für Verluste oder Schäden haftbar gemacht werden, die aus Ihrer Nichterfüllung dieser Sicherheitsverpflichtung resultieren.',
-    'legal.user-content': 'Benutzerinhalte',
-    'legal.user-content-text': 'Sie sind verantwortlich für alle Inhalte und Aktivitäten, die unter Ihrem Konto stattfinden. Schädliche oder missbräuchliche Inhalte sind strengstens verboten.',
-    'legal.prohibited-conduct': 'Verbotenes Verhalten',
-    'legal.prohibited-conduct-text': 'Benutzer dürfen sich nicht an Aktivitäten beteiligen, die die Dienste oder Server der Plattform stören oder beeinträchtigen.',
-    'legal.intellectual-property': 'Geistiges Eigentum',
-    'legal.intellectual-property-text': 'Der Dienst und seine ursprünglichen Inhalte, Funktionen und Funktionalitäten sind Eigentum der Plattform und sind durch internationale Urheberrechts-, Marken-, Patent-, Geschäftsgeheimnis- und andere Gesetze zum geistigen Eigentum geschützt.',
-    'legal.termination': 'Kündigung',
-    'legal.termination-text': 'Wir können Ihr Konto kündigen oder sperren und den Zugang zum Dienst sofort, ohne vorherige Ankündigung oder Haftung, nach eigenem Ermessen, aus irgendeinem Grund und ohne Einschränkung verweigern.',
-    'legal.disclaimer': 'Haftungsausschluss',
-    'legal.disclaimer-text': 'Ihre Nutzung des Dienstes erfolgt auf eigenes Risiko. Der Dienst wird "WIE ER IST" und "WIE VERFÜGBAR" ohne jegliche Garantie angeboten.',
-    'legal.limitation-liability': 'Haftungsbeschränkung',
-    'legal.limitation-liability-text': 'In keinem Fall haften die Plattform, ihre Direktoren, Mitarbeiter, Partner, Agenten, Lieferanten oder verbundenen Unternehmen für indirekte, zufällige, besondere, Folge- oder Strafschäden.',
-    'legal.governing-law': 'Geltendes Recht',
-    'legal.governing-law-text': 'Diese Bedingungen unterliegen den Gesetzen der Jurisdiktion, in der die Plattform registriert ist, und werden in Übereinstimmung mit diesen ausgelegt.',
-  },
-  es: {
-    // Navigation
-    'nav.home': 'Inicio',
-    'nav.bots': 'Bots',
-    'nav.add-bot': 'Añadir Bot',
-    'nav.admin': 'Admin',
-    'nav.profile': 'Perfil',
-    'nav.login': 'Iniciar Sesión',
-    'nav.register': 'Registrarse',
-    'nav.logout': 'Cerrar Sesión',
-    'nav.search': 'Buscar',
-    'nav.servers': 'Servidores',
-    'nav.add-server': 'Añadir Servidor',
-    'nav.account': 'Cuenta',
-    
-    // Home page
-    'home.title': 'Descubre Bots de Discord',
-    'home.subtitle': 'Encuentra el bot perfecto para tu servidor de Discord',
-    'home.search-placeholder': 'Buscar por nombre, categoría o función',
-    'home.explore': 'Explorar Bots',
-    'home.popular': 'Bots Populares',
-    'home.recent': 'Añadidos Recientemente',
-    'home.featured': 'Bots Destacados',
-    
-    // Auth
-    'auth.login': 'Iniciar Sesión',
-    'auth.register': 'Registrarse',
-    'auth.email': 'Correo Electrónico',
-    'auth.password': 'Contraseña',
-    'auth.confirm-password': 'Confirmar Contraseña',
-    'auth.username': 'Nombre de Usuario',
-    'auth.username-placeholder': 'Introduce tu nombre de usuario',
-    'auth.forgot-password': '¿Olvidaste tu contraseña?',
-    'auth.already-account': '¿Ya tienes una cuenta?',
-    'auth.no-account': '¿No tienes una cuenta?',
-    'auth.or': 'o',
-    'auth.login-with-google': 'Iniciar sesión con Google',
-    'auth.register-with-google': 'Registrarse con Google',
-    'auth.login-with-discord': 'Iniciar sesión con Discord',
-    'auth.register-with-discord': 'Registrarse con Discord',
-    'auth.login-description': 'Inicia sesión para gestionar tus bots y servidores',
-    'auth.register-description': 'Crea una cuenta para añadir tus bots y servidores a nuestro directorio',
-    
-    // Bot details
-    'bot.add': 'Añadir Bot',
-    'bot.edit': 'Editar Bot',
-    'bot.delete': 'Eliminar Bot',
-    'bot.name': 'Nombre del Bot',
-    'bot.description': 'Descripción',
-    'bot.id': 'ID del Bot',
-    'bot.prefix': 'Prefijo',
-    'bot.category': 'Categoría',
-    'bot.website': 'Sitio Web',
-    'bot.invite': 'Invitar Bot',
-    'bot.support': 'Servidor de Soporte',
-    'bot.github': 'Repositorio GitHub',
-    'bot.tags': 'Etiquetas',
-    'bot.save': 'Guardar Bot',
-    'bot.cancel': 'Cancelar',
-    'bot.owner': 'Propietario',
-    'bot.created': 'Creado',
-    'bot.updated': 'Actualizado',
-    'bot.stars': 'estrellas',
-    'bot.verified': 'Verificado',
-    'bot.no-description': 'Sin descripción',
-    'bot.unknown': 'Desconocido',
-    'bot.not-found': 'Bot no encontrado',
-    'bot.not-found-description': 'El bot que buscas no existe o ha sido eliminado.',
-    'bot.back-to-bots': 'Volver a los Bots',
-    'bot.view-details': 'Ver Detalles',
-    'bot.directory': 'Directorio de Bots',
-    'bot.directory-desc': 'Explora y descubre bots de Discord para tu servidor',
-    'bot.none-found': 'No se encontraron bots',
-    'bot.be-first': '¡Sé el primero en añadir un bot!',
-    'bot.add-yours': 'Añade tu Bot',
-    'bot.last-updated': 'Última actualización',
-    'bot.bump': 'Impulsar',
-    'bot.bumping': 'Impulsando...',
-    
-    // Admin
-    'admin.title': 'Panel de Administración',
-    'admin.users': 'Usuarios',
-    'admin.bots': 'Bots',
-    'admin.reports': 'Reportes',
-    'admin.settings': 'Configuración',
-    'admin.pending': 'Bots Pendientes',
-    'admin.servers': 'Servidores Discord',
-    'admin.overview': 'Resumen',
-    'admin.user-management': 'Gestión de Usuarios',
-    'admin.verified-bots': 'Bots Verificados',
-    'admin.pending-bots': 'Verificación Pendiente',
-    'admin.server-management': 'Gestión de Servidores',
-    'admin.total-users': 'Total de Usuarios',
-    'admin.total-bots': 'Total de Bots',
-    'admin.total-servers': 'Total de Servidores',
-    'admin.pending-verification': 'Verificación Pendiente',
-    'admin.registered-users': 'Usuarios Registrados',
-    'admin.verification-required': 'Verificación Requerida',
-    'admin.refresh': 'Actualizar',
-    'admin.approve': 'Aprobar',
-    'admin.decline': 'Rechazar',
-    'admin.remove-admin': 'Quitar Derechos de Admin',
-    'admin.make-admin': 'Hacer Admin',
-    'admin.last-updated': 'Última actualización',
-    'admin.user-details': 'Detalles del Usuario',
-    'admin.close': 'Cerrar',
-    'admin.error-fetching-bots': 'Error al obtener los bots',
-    
-    // Footer
-    'footer.privacy': 'Política de Privacidad',
-    'footer.imprint': 'Aviso Legal',
-    'footer.terms': 'Términos de Servicio',
-    'footer.contact': 'Contacto',
-    'footer.language': 'Idioma',
-    
-    // Misc
-    'misc.loading': 'Cargando...',
-    'misc.error': 'Ha ocurrido un error',
-    'misc.success': '¡Éxito!',
-    'misc.search': 'Buscar',
-    'misc.save': 'Guardar',
-    'misc.cancel': 'Cancelar',
-    'misc.delete': 'Eliminar',
-    'misc.edit': 'Editar',
-    'misc.view': 'Ver',
-    'misc.create': 'Crear',
-    'misc.submit': 'Enviar',
-    'misc.back': 'Atrás',
-    'misc.next': 'Siguiente',
-    'misc.previous': 'Anterior',
-    'misc.unknown': 'Desconocido',
-    'misc.back-to-bots': 'Volver a los Bots',
-    'misc.saving': 'Guardando...',
-    
-    // Cookie banner
-    'cookie.title': 'Aviso de Cookies',
-    'cookie.description': 'Utilizamos cookies para garantizar que obtenga la mejor experiencia en nuestro sitio web.',
-    'cookie.accept': 'Aceptar Todo',
-    'cookie.decline': 'Rechazar',
-    'cookie.preferences': 'Personalizar',
-    
-    // Profile
-    'profile.title': 'Perfil',
-    'profile.edit': 'Editar Perfil',
-    'profile.bots': 'Mis Bots',
-    'profile.settings': 'Configuración',
-    'profile.your-profile': 'Tu Perfil',
-    'profile.manage-details': 'Gestiona los detalles de tu perfil',
-    'profile.edit-profile': 'Editar Perfil',
-    'profile.update-information': 'Actualizar información de perfil',
-    'profile.username': 'Nombre de usuario',
-    'profile.username-placeholder': 'Introduce tu nombre de usuario',
-    'profile.bio': 'Biografía',
-    'profile.bio-placeholder': 'Cuéntanos sobre ti',
-    'profile.website': 'Sitio web',
-    'profile.website-placeholder': 'URL de tu sitio web',
-    'profile.save-changes': 'Guardar Cambios',
-    'profile.your-bots': 'Tus Bots',
-    'profile.manage-bots': 'Gestiona tus bots de Discord',
-    'profile.view-bot': 'Ver Bot',
-    
-    // Legal
-    'legal.imprint': 'Aviso Legal',
-    'legal.company-information': 'Información de la Empresa',
-    'legal.company-name': 'Directorio de Bots de Discord',
-    'legal.company-address': 'Calle Bot 123',
-    'legal.company-city': 'Ciudad Bot, 10115',
-    'legal.company-country': 'Botland',
-    'legal.contact': 'Contacto',
-    'legal.email': 'Correo Electrónico',
-    'legal.phone': 'Teléfono',
-    'legal.registration': 'Registro',
-    'legal.registration-text': 'Registrado en el Registro Mercantil de Ciudad Bot. Número de registro: BOT123456',
-    'legal.vat': 'IVA',
-    'legal.vat-text': 'Número de Identificación de IVA según § 27a de la Ley del Impuesto sobre el Valor Añadido: DE123456789',
-    'legal.responsible-content': 'Responsable del Contenido',
-    'legal.responsible-content-text': 'Persona responsable del contenido de acuerdo con § 55 Abs. 2 RStV: Juan Pérez, Calle Bot 123, Ciudad Bot, 10115 Botland',
-    'legal.dispute-resolution': 'Resolución de Disputas',
-    'legal.dispute-resolution-text': 'La Comisión Europea proporciona una plataforma para la resolución de disputas en línea (OS): https://ec.europa.eu/consumers/odr. No estamos dispuestos ni obligados a participar en procedimientos de resolución de disputas ante una junta de arbitraje de consumidores.',
-    'legal.privacy-policy': 'Política de Privacidad',
-    'legal.information-collection': 'Recopilación de Información',
-    'legal.information-collection-text': 'Recopilamos información que nos proporciona directamente al registrar una cuenta, agregar bots o interactuar con nuestra plataforma. Esto incluye direcciones de correo electrónico, nombres de usuario e IDs de Discord.',
-    'legal.information-usage': 'Uso de la Información',
-    'legal.information-usage-text': 'Utilizamos información sobre usted para proporcionar, mantener y mejorar nuestros servicios, desarrollar nuevas funciones y proteger la plataforma y nuestros usuarios.',
-    'legal.information-protection': 'Protección de la Información',
-    'legal.information-protection-text': 'Implementamos medidas diseñadas para garantizar la seguridad de su información personal. Sin embargo, ningún método de transmisión por Internet es 100% seguro.',
-    'legal.cookie-usage': 'Uso de Cookies',
-    'legal.cookie-usage-text': 'Utilizamos cookies y tecnologías similares para recopilar información sobre cómo interactúa con nuestros servicios y para recordar ciertas preferencias.',
-    'legal.third-party-disclosure': 'Divulgación a Terceros',
-    'legal.third-party-disclosure-text': 'No vendemos, intercambiamos ni transferimos su información personalmente identificable a terceros sin su consentimiento.',
-    'legal.third-party-links': 'Enlaces a Terceros',
-    'legal.third-party-links-text': 'Nuestro servicio puede contener enlaces a sitios web o servicios de terceros. No tenemos control ni asumimos responsabilidad por el contenido, las políticas de privacidad o las prácticas de sitios web o servicios de terceros.',
-    'legal.gdpr-compliance': 'Cumplimiento del RGPD',
-    'legal.gdpr-compliance-text': 'Para los usuarios de la Unión Europea, proporcionamos derechos sobre sus datos personales, incluido el derecho a acceder, corregir o eliminar su información personal.',
-    'legal.childrens-privacy': 'Privacidad de los Niños',
-    'legal.childrens-privacy-text': 'Nuestros servicios no están dirigidos a personas menores de 13 años. No recopilamos a sabiendas información personalmente identificable de niños menores de 13 años.',
-    'legal.changes-to-policy': 'Cambios en la Política',
-    'legal.changes-to-policy-text': 'Podemos actualizar nuestra Política de Privacidad de vez en cuando. Le notificaremos cualquier cambio publicando la nueva Política de Privacidad en esta página.',
-    'legal.contact-us': 'Contáctenos',
-    'legal.contact-us-text': 'Si tiene alguna pregunta sobre esta Política de Privacidad, contáctenos a través de la plataforma o mediante la información de contacto proporcionada.',
-    'legal.terms-of-service': 'Términos de Servicio',
-    'legal.acceptance': 'Aceptación de Términos',
-    'legal.terms-acceptance-text': 'Al acceder y utilizar este Directorio de Bots de Discord, acepta y acuerda estar sujeto a los términos y disposiciones de este acuerdo.',
-    'legal.eligibility': 'Elegibilidad',
-    'legal.eligibility-text': 'Para utilizar nuestros servicios, debe tener al menos 13 años de edad y cumplir con los Términos de Servicio de Discord.',
-    'legal.user-accounts': 'Cuentas de Usuario',
-    'legal.user-accounts-text': 'Los usuarios son responsables de mantener la seguridad de su cuenta y contraseña. La plataforma no puede y no será responsable por cualquier pérdida o daño derivado de su incumplimiento de esta obligación de seguridad.',
-    'legal.user-content': 'Contenido del Usuario',
-    'legal.user-content-text': 'Usted es responsable de todo el contenido y actividad que ocurre bajo su cuenta. El contenido dañino o abusivo está estrictamente prohibido.',
-    'legal.prohibited-conduct': 'Conducta Prohibida',
-    'legal.prohibited-conduct-text': 'Los usuarios no pueden participar en ninguna actividad que interfiera o interrumpa los servicios o servidores conectados a la plataforma.',
-    'legal.intellectual-property': 'Propiedad Intelectual',
-    'legal.intellectual-property-text': 'El servicio y su contenido, características y funcionalidad originales son propiedad de la plataforma y están protegidos por derechos de autor internacionales, marcas registradas, patentes, secretos comerciales y otras leyes de propiedad intelectual.',
-    'legal.termination': 'Terminación',
-    'legal.termination-text': 'Podemos terminar o suspender su cuenta y prohibir el acceso al servicio inmediatamente, sin previo aviso o responsabilidad, bajo nuestra única discreción, por cualquier motivo y sin limitación.',
-    'legal.disclaimer': 'Exención de Responsabilidad',
-    'legal.disclaimer-text': 'Su uso del servicio es bajo su propio riesgo. El servicio se proporciona "TAL CUAL" y "SEGÚN DISPONIBILIDAD" sin garantía de ningún tipo.',
-    'legal.limitation-liability': 'Limitación de Responsabilidad',
-    'legal.limitation-liability-text': 'En ningún caso la plataforma, ni sus directores, empleados, socios, agentes, proveedores o afiliados, serán responsables por daños indirectos, incidentales, especiales, consecuentes o punitivos.',
-    'legal.governing-law': 'Ley Aplicable',
-    'legal.governing-law-text': 'Estos Términos se regirán e interpretarán de acuerdo con las leyes aplicables en la jurisdicción donde está registrada la plataforma.',
-  }
-};
-
-// Language provider component
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Get browser language or use English as default
-  const getBrowserLanguage = (): Language => {
-    const browserLang = navigator.language.split('-')[0];
-    return (browserLang === 'de' || browserLang === 'es') ? browserLang as Language : 'en';
-  };
-
-  // Get stored language or browser language
-  const getInitialLanguage = (): Language => {
-    const storedLanguage = localStorage.getItem('language') as Language;
-    return storedLanguage || getBrowserLanguage();
-  };
-
-  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
-
-  // Set language and save to localStorage
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem('language', lang);
-    document.documentElement.lang = lang;
-  };
-
-  // Translate a key
-  const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations[typeof language]] || key;
-  };
-
-  // Set document language on initial load
-  useEffect(() => {
-    document.documentElement.lang = language;
-  }, [language]);
-
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
-// Custom hook to use the language context
-export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
+    'legal.third-party-links-text': 'Unser Dienst kann Links zu Websites oder Diensten von Drittanbietern enthalten. Wir haben keine Kontrolle über und übernehmen keine Verantwortung für den Inhalt, die Datenschutzricht

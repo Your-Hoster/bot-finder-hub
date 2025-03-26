@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -82,7 +83,9 @@ const BotDetail = () => {
           verified: data.verified,
           created_at: data.created_at,
           updated_at: data.updated_at,
-          profiles: typeof data.profiles === 'object' ? data.profiles : { username: null }
+          profiles: data.profiles && typeof data.profiles === 'object' ? { 
+            username: data.profiles.username 
+          } : null
         };
         
         setBot(botData);
