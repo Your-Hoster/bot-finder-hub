@@ -1,4 +1,0 @@
-
-project_id = 'lovable'
-[discord-bot]
-verify_jwt = false
