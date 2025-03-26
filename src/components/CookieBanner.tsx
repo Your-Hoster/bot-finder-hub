@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useCookies } from '@/contexts/CookieContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { AnimatePresence, motion } from 'framer-motion';
+import { toast } from '@/hooks/use-toast';
 
 export const CookieBanner = () => {
   const { cookieConsent, cookieSettings, acceptAllCookies, declineCookies, updateCookieSettings, showCookieSettings, setShowCookieSettings } = useCookies();
@@ -35,6 +36,10 @@ export const CookieBanner = () => {
       marketing: cookieSettings.marketing,
     });
     setShowCookieSettings(false);
+    toast({
+      title: t('misc.success'),
+      description: t('cookie.save_preferences')
+    });
   };
   
   return (

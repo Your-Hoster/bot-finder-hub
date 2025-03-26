@@ -24,6 +24,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Imprint from "./pages/Imprint";
 import AccountManager from './pages/AccountManager';
+import DiscordBotSetup from './pages/DiscordBotSetup';
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/account" element={<AccountManager />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/discord-bot" element={<DiscordBotSetup />} />
                     <Route path="/privacy" element={<Privacy />} />
                     <Route path="/terms" element={<Terms />} />
                     <Route path="/imprint" element={<Imprint />} />
